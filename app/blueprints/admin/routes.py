@@ -595,14 +595,23 @@ def settings():
     fields = [
         'brand_name', 'brand_tagline', 'hero_title', 'hero_subtitle',
         'whatsapp_number', 'contact_phone', 'contact_email', 'office_address',
-        'currency_symbol', 'instagram_url', 'twitter_url', 'linkedin_url', 'facebook_url'
+        'currency_symbol', 'instagram_url', 'twitter_url', 'linkedin_url', 'facebook_url',
+        'faq_q1', 'faq_a1', 'faq_q2', 'faq_a2', 'faq_q3', 'faq_a3', 'faq_q4', 'faq_a4', 'faq_q5', 'faq_a5'
+    ]
+
+    default_faqs = [
+        ("How long does it take to deliver my website?", "Starter and standard catalog websites are typically completed within 5 to 10 business days once you supply your logos, product photos, and business details. Complex custom web applications take 2 to 4 weeks depending on scope."),
+        ("Can I request custom features not shown in the catalogue?", "Absolutely! Our catalogue showcases proven starting points, but every project can be customized with specific payment gateways, wholesale pricing, booking engines, or custom dashboards."),
+        ("Will my website work properly on mobile phones?", "Yes. In Nigeria and globally, over 80% of e-commerce traffic originates from mobile devices. Every website we build is rigorously tested across iPhones, Android devices, tablets, and desktop computers."),
+        ("Can I update prices and upload new products myself later?", "Yes. We provide an intuitive administrative dashboard where you or your staff can add products, change prices, update phone numbers, and view customer inquiries without touching any code."),
+        ("How does payment work?", "We typically operate on a milestone structure: 50% commitment deposit to commence work, and the remaining 50% upon final staging review and handover of your live domain.")
     ]
 
     if form.validate_on_submit():
         for field in fields:
             val = getattr(form, field).data
             SiteSetting.set(field, val.strip() if val else "")
-        flash('Brand settings updated successfully.', 'success')
+        flash('Brand settings and FAQ updated successfully.', 'success')
         return redirect(url_for('admin.settings'))
 
     elif request.method == 'GET':
@@ -619,5 +628,9 @@ def settings():
         form.twitter_url.data = SiteSetting.get('twitter_url', '')
         form.linkedin_url.data = SiteSetting.get('linkedin_url', '')
         form.facebook_url.data = SiteSetting.get('facebook_url', '')
+
+        for i, (q_def, a_def) in enumerate(default_faqs, 1):
+            getattr(form, f'faq_q{i}').data = SiteSetting.get(f'faq_q{i}', q_def)
+            getattr(form, f'faq_a{i}').data = SiteSetting.get(f'faq_a{i}', a_def)
 
     return render_template('admin/settings/index.html', form=form)

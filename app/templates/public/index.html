@@ -440,70 +440,20 @@
     <div class="row justify-content-center">
       <div class="col-lg-8">
         <div class="accordion" id="faqAccordion">
+          {% for faq in faqs %}
           <div class="accordion-item">
-            <h2 class="accordion-header" id="headingOne">
-              <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-                How long does it take to deliver my website?
+            <h2 class="accordion-header" id="heading{{ faq.id }}">
+              <button class="accordion-button {% if not loop.first %}collapsed{% endif %}" type="button" data-bs-toggle="collapse" data-bs-target="#collapse{{ faq.id }}" aria-expanded="{{ 'true' if loop.first else 'false' }}" aria-controls="collapse{{ faq.id }}">
+                {{ faq.question }}
               </button>
             </h2>
-            <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#faqAccordion">
-              <div class="accordion-body small text-muted">
-                Starter and standard catalog websites are typically completed within 5 to 10 business days once you supply your logos, product photos, and business details. Complex custom web applications take 2 to 4 weeks depending on scope.
+            <div id="collapse{{ faq.id }}" class="accordion-collapse collapse {% if loop.first %}show{% endif %}" aria-labelledby="heading{{ faq.id }}" data-bs-parent="#faqAccordion">
+              <div class="accordion-body text-secondary" style="font-size: 0.95rem; line-height: 1.7;">
+                {{ faq.answer }}
               </div>
             </div>
           </div>
-
-          <div class="accordion-item">
-            <h2 class="accordion-header" id="headingTwo">
-              <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
-                Can I request custom features not shown in the catalogue?
-              </button>
-            </h2>
-            <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#faqAccordion">
-              <div class="accordion-body small text-muted">
-                Absolutely! Our catalogue showcases proven starting points, but every project can be customized with specific payment gateways, wholesale pricing, booking engines, or custom dashboards.
-              </div>
-            </div>
-          </div>
-
-          <div class="accordion-item">
-            <h2 class="accordion-header" id="headingThree">
-              <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
-                Will my website work properly on mobile phones?
-              </button>
-            </h2>
-            <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingThree" data-bs-parent="#faqAccordion">
-              <div class="accordion-body small text-muted">
-                Yes. In Nigeria and globally, over 80% of e-commerce traffic originates from mobile devices. Every website we build is rigorously tested across iPhones, Android devices, tablets, and desktop computers.
-              </div>
-            </div>
-          </div>
-
-          <div class="accordion-item">
-            <h2 class="accordion-header" id="headingFour">
-              <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFour" aria-expanded="false" aria-controls="collapseFour">
-                Can I update prices and upload new products myself later?
-              </button>
-            </h2>
-            <div id="collapseFour" class="accordion-collapse collapse" aria-labelledby="headingFour" data-bs-parent="#faqAccordion">
-              <div class="accordion-body small text-muted">
-                Yes. We provide an intuitive administrative dashboard where you or your staff can add products, change prices, update phone numbers, and view customer inquiries without touching any code.
-              </div>
-            </div>
-          </div>
-
-          <div class="accordion-item">
-            <h2 class="accordion-header" id="headingFive">
-              <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFive" aria-expanded="false" aria-controls="collapseFive">
-                How does payment work?
-              </button>
-            </h2>
-            <div id="collapseFive" class="accordion-collapse collapse" aria-labelledby="headingFive" data-bs-parent="#faqAccordion">
-              <div class="accordion-body small text-muted">
-                We typically operate on a milestone structure: 50% commitment deposit to commence work, and the remaining 50% upon final staging review and handover of your live domain.
-              </div>
-            </div>
-          </div>
+          {% endfor %}
         </div>
       </div>
     </div>

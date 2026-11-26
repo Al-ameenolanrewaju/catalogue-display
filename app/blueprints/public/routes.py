@@ -14,6 +14,20 @@ public_bp = Blueprint('public', __name__)
 @public_bp.app_context_processor
 def inject_site_settings():
     """Makes configurable branding and settings available to all Jinja templates."""
+    default_faqs = [
+        ("How long does it take to deliver my website?", "Starter and standard catalog websites are typically completed within 5 to 10 business days once you supply your logos, product photos, and business details. Complex custom web applications take 2 to 4 weeks depending on scope."),
+        ("Can I request custom features not shown in the catalogue?", "Absolutely! Our catalogue showcases proven starting points, but every project can be customized with specific payment gateways, wholesale pricing, booking engines, or custom dashboards."),
+        ("Will my website work properly on mobile phones?", "Yes. In Nigeria and globally, over 80% of e-commerce traffic originates from mobile devices. Every website we build is rigorously tested across iPhones, Android devices, tablets, and desktop computers."),
+        ("Can I update prices and upload new products myself later?", "Yes. We provide an intuitive administrative dashboard where you or your staff can add products, change prices, update phone numbers, and view customer inquiries without touching any code."),
+        ("How does payment work?", "We typically operate on a milestone structure: 50% commitment deposit to commence work, and the remaining 50% upon final staging review and handover of your live domain.")
+    ]
+    faqs = []
+    for i, (q_def, a_def) in enumerate(default_faqs, 1):
+        q = SiteSetting.get(f'faq_q{i}', q_def)
+        a = SiteSetting.get(f'faq_a{i}', a_def)
+        if q and a:
+            faqs.append({'id': i, 'question': q, 'answer': a})
+
     return {
         'brand_name': SiteSetting.get('brand_name', 'ApexCraft Studios'),
         'brand_tagline': SiteSetting.get('brand_tagline', 'Turn Browsers Into Buyers With High-Converting Websites'),
@@ -28,6 +42,7 @@ def inject_site_settings():
         'twitter_url': SiteSetting.get('twitter_url', '#'),
         'linkedin_url': SiteSetting.get('linkedin_url', '#'),
         'facebook_url': SiteSetting.get('facebook_url', '#'),
+        'faqs': faqs,
     }
 
 

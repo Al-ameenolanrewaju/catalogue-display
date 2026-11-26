@@ -93,4 +93,17 @@ class SiteSettingsForm(FlaskForm):
     twitter_url = StringField('X / Twitter URL', validators=[Optional(), URL()])
     linkedin_url = StringField('LinkedIn URL', validators=[Optional(), URL()])
     facebook_url = StringField('Facebook URL', validators=[Optional(), URL()])
+
+    # Frequently Asked Questions (FAQ)
+    faq_q1 = StringField('Question 1', validators=[Optional(), Length(max=255)])
+    faq_a1 = TextAreaField('Answer 1', validators=[Optional()])
+    faq_q2 = StringField('Question 2', validators=[Optional(), Length(max=255)])
+    faq_a2 = TextAreaField('Answer 2', validators=[Optional()])
+    faq_q3 = StringField('Question 3', validators=[Optional(), Length(max=255)])
+    faq_a3 = TextAreaField('Answer 3', validators=[Optional()])
+    faq_q4 = StringField('Question 4', validators=[Optional(), Length(max=255)])
+    faq_a4 = TextAreaField('Answer 4', validators=[Optional()])
+    faq_q5 = StringField('Question 5', validators=[Optional(), Length(max=255)])
+    faq_a5 = TextAreaField('Answer 5', validators=[Optional()])
+
     submit = SubmitField('Save Settings')

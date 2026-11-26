@@ -85,6 +85,33 @@
           </div>
         </div>
 
+        <h6 class="fw-bold font-heading text-charcoal mb-3 pt-3 border-top border-subtle">Frequently Asked Questions (FAQ)</h6>
+        <p class="text-muted small mb-3">Configure up to 5 questions and answers displayed in the homepage FAQ accordion.</p>
+        
+        <div class="accordion mb-4" id="adminFaqAccordion">
+          {% for i in range(1, 6) %}
+          <div class="accordion-item border rounded-3 mb-2 overflow-hidden">
+            <h2 class="accordion-header" id="headingAdminFaq{{ i }}">
+              <button class="accordion-button collapsed py-2 px-3 fw-semibold small bg-light" type="button" data-bs-toggle="collapse" data-bs-target="#collapseAdminFaq{{ i }}" aria-expanded="false" aria-controls="collapseAdminFaq{{ i }}">
+                FAQ Item #{{ i }}
+              </button>
+            </h2>
+            <div id="collapseAdminFaq{{ i }}" class="accordion-collapse collapse {% if i == 1 %}show{% endif %}" aria-labelledby="headingAdminFaq{{ i }}" data-bs-parent="#adminFaqAccordion">
+              <div class="accordion-body p-3 bg-white">
+                <div class="mb-2">
+                  <label class="form-label small fw-bold text-charcoal">Question {{ i }}</label>
+                  {{ form['faq_q' ~ i](class="form-control form-control-sm", placeholder="Enter question...") }}
+                </div>
+                <div>
+                  <label class="form-label small fw-bold text-charcoal">Answer {{ i }}</label>
+                  {{ form['faq_a' ~ i](class="form-control form-control-sm", rows="3", placeholder="Enter answer...") }}
+                </div>
+              </div>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+
         <button type="submit" class="btn btn-gold btn-lg w-100 shadow-sm">
           {{ form.submit.label.text }}
         </button>
