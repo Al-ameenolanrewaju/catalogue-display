@@ -91,7 +91,7 @@
               <i class="bi bi-building me-1"></i> Target: {{ project.intended_business_type }}
             </div>
             <h5 class="fw-bold text-charcoal mb-2 font-heading">{{ project.title }}</h5>
-            <p class="text-secondary small mb-3 line-clamp-2" style="min-height: 2.6rem; font-size: 0.88rem; line-height: 1.6;">
+            <p class="text-secondary small mb-3" style="font-size: 0.88rem; line-height: 1.6; min-height: 3.8rem;">
               {{ project.short_description }}
             </p>
 
@@ -100,7 +100,7 @@
               {% for feat in project.features[:3] %}
               <div class="showcase-feature-chip">
                 <i class="bi bi-check2 text-success"></i>
-                <span class="text-truncate">{{ feat.feature_text }}</span>
+                <span>{{ feat.feature_text }}</span>
               </div>
               {% endfor %}
             </div>

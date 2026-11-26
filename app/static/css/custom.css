@@ -128,24 +128,28 @@ small, .small {
 
 /* Header & Navbar Styling */
 .navbar-custom {
-  background-color: rgba(250, 248, 245, 0.96) !important;
+  background-color: rgba(250, 248, 245, 0.98) !important;
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   border-bottom: 1px solid var(--border-subtle);
   transition: all 0.3s ease;
   z-index: 1030;
+  width: 100%;
 }
 .navbar-brand {
   text-decoration: none;
 }
+.navbar-nav {
+  flex-wrap: nowrap !important;
+}
 .nav-link {
   font-weight: 500;
   color: var(--text-main) !important;
-  padding: 0.5rem 0.85rem !important;
+  padding: 0.45rem 0.75rem !important;
   border-radius: var(--radius-sm);
   transition: all 0.2s ease;
-  white-space: nowrap;
-  font-size: 0.95rem;
+  white-space: nowrap !important;
+  font-size: 0.92rem;
 }
 .nav-link:hover {
   color: var(--accent-gold-dark) !important;
@@ -159,8 +163,23 @@ small, .small {
 
 @media (min-width: 992px) and (max-width: 1199.98px) {
   .nav-link {
-    padding: 0.45rem 0.55rem !important;
-    font-size: 0.88rem;
+    padding: 0.35rem 0.48rem !important;
+    font-size: 0.84rem !important;
+  }
+}
+
+@media (max-width: 991.98px) {
+  .navbar-custom .navbar-collapse {
+    background: #FFFFFF;
+    border-radius: var(--radius-md);
+    padding: 1.25rem;
+    margin-top: 0.75rem;
+    border: 1px solid var(--border-subtle);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+  }
+  .navbar-nav .nav-link {
+    padding: 0.65rem 0.85rem !important;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.03);
   }
 }
 
@@ -290,15 +309,24 @@ nav[aria-label="breadcrumb"],
 }
 .showcase-feature-chip {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   gap: 7px;
   font-size: 0.86rem;
   color: #292524;
   font-weight: 500;
+  line-height: 1.4;
 }
 .showcase-feature-chip i {
   font-size: 0.95rem;
-  line-height: 1;
+  line-height: 1.3;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+.showcase-feature-chip span {
+  white-space: normal !important;
+  overflow: visible !important;
+  text-overflow: unset !important;
+  word-break: normal;
 }
 
 /* Category Filter Chips */
