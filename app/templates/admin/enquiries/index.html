@@ -1,0 +1,98 @@
+{% extends "admin/base_admin.html" %}
+
+{% block page_title %}Client Enquiries{% endblock %}
+
+{% block content %}
+<div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-4">
+  <div>
+    <h4 class="fw-bold font-heading text-charcoal mb-1">Client Inquiries & Leads</h4>
+    <p class="text-muted small mb-0">Track prospect submissions, quotations, and deal statuses from the showroom.</p>
+  </div>
+</div>
+
+<!-- Filters Bar -->
+<div class="bg-white p-3 rounded-4 border border-subtle shadow-sm mb-4">
+  <form method="GET" action="{{ url_for('admin.enquiries_list') }}" class="row g-2 align-items-center">
+    <div class="col-md-6">
+      <div class="input-group input-group-sm">
+        <span class="input-group-text bg-white border-subtle text-muted"><i class="bi bi-search"></i></span>
+        <input type="text" name="q" value="{{ search }}" class="form-control" placeholder="Search by name, business, reference, or phone...">
+      </div>
+    </div>
+    <div class="col-md-4">
+      <select name="status" class="form-select form-select-sm" onchange="this.form.submit()">
+        <option value="">All Statuses</option>
+        {% for s in statuses %}
+        <option value="{{ s }}" {% if current_status == s %}selected{% endif %}>{{ s }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div class="col-md-2">
+      <button type="submit" class="btn btn-sm btn-outline-dark w-100">Filter</button>
+    </div>
+  </form>
+</div>
+
+<!-- Enquiries Table -->
+<div class="bg-white rounded-4 border border-subtle shadow-sm overflow-hidden">
+  <div class="table-responsive">
+    <table class="table table-hover align-middle mb-0 small">
+      <thead class="table-light">
+        <tr>
+          <th>Reference</th>
+          <th>Client & Business</th>
+          <th>WhatsApp</th>
+          <th>Showcase / Package</th>
+          <th>Estimated Total</th>
+          <th>Status</th>
+          <th>Date</th>
+          <th class="text-end">Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for enq in enquiries %}
+        <tr>
+          <td class="fw-bold font-monospace">{{ enq.reference_code }}</td>
+          <td>
+            <div class="fw-bold text-charcoal">{{ enq.business_name }}</div>
+            <div class="text-muted">{{ enq.full_name }}</div>
+          </td>
+          <td>
+            <a href="https://wa.me/{{ enq.whatsapp_number }}" target="_blank" class="text-decoration-none text-success fw-semibold">
+              <i class="bi bi-whatsapp"></i> {{ enq.whatsapp_number }}
+            </a>
+          </td>
+          <td>
+            <div>{{ enq.website.title if enq.website else 'General Consultation' }}</div>
+            <small class="text-muted">{{ enq.package.name if enq.package else 'No package' }}</small>
+          </td>
+          <td>
+            {% if enq.calculated_estimate %}
+            <span class="fw-bold text-charcoal">₦{{ "{:,.0f}".format(enquiry_est if (enquiry_est := enq.calculated_estimate) else 0) }}</span>
+            {% else %}
+            <span class="text-muted">Custom Quote</span>
+            {% endif %}
+          </td>
+          <td>
+            <span class="badge {{ enq.status_badge_class }}">{{ enq.status }}</span>
+          </td>
+          <td class="text-muted">{{ enq.created_at.strftime('%b %d, %H:%M') }}</td>
+          <td class="text-end">
+            <a href="{{ url_for('admin.enquiry_detail', enquiry_id=enq.id) }}" class="btn btn-sm btn-outline-primary">
+              <i class="bi bi-card-text"></i> Review
+            </a>
+          </td>
+        </tr>
+        {% else %}
+        <tr>
+          <td colspan="8" class="text-center py-5 text-muted">
+            <i class="bi bi-inbox fs-2 d-block mb-2"></i>
+            No enquiries matching this criteria.
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

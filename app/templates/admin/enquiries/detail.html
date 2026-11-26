@@ -1,0 +1,198 @@
+{% extends "admin/base_admin.html" %}
+
+{% block page_title %}Enquiry #{{ enquiry.reference_code }}{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <div>
+    <div class="d-flex align-items-center gap-2 mb-1">
+      <h4 class="fw-bold font-heading text-charcoal mb-0">Enquiry #{{ enquiry.reference_code }}</h4>
+      <span class="badge {{ enquiry.status_badge_class }} fs-6">{{ enquiry.status }}</span>
+    </div>
+    <p class="text-muted small mb-0">Received on {{ enquiry.created_at.strftime('%B %d, %Y at %I:%M %p') }}</p>
+  </div>
+  <a href="{{ url_for('admin.enquiries_list') }}" class="btn btn-outline-secondary btn-sm">
+    <i class="bi bi-arrow-left"></i> Back to Enquiries
+  </a>
+</div>
+
+<div class="row g-4">
+  <!-- Left Column: Client Details, Website, Package, Addons -->
+  <div class="col-lg-8">
+    <!-- Client Profile -->
+    <div class="bg-white p-4 rounded-4 border border-subtle shadow-sm mb-4">
+      <div class="d-flex justify-content-between align-items-center mb-3 pb-2 border-bottom border-subtle">
+        <h6 class="fw-bold font-heading text-charcoal mb-0">Prospect Profile</h6>
+        {% if client_whatsapp_clean %}
+        <a href="https://wa.me/{{ client_whatsapp_clean }}?text=Hello%20{{ enquiry.full_name }},%20this%20is%20{{ brand_name }}%20regarding%20your%20website%20enquiry%20%23{{ enquiry.reference_code }}." target="_blank" class="btn btn-sm btn-success d-inline-flex align-items-center gap-1 shadow-sm">
+          <i class="bi bi-whatsapp"></i> Chat with Client
+        </a>
+        {% endif %}
+      </div>
+
+      <div class="row g-3 small">
+        <div class="col-sm-6">
+          <span class="text-muted d-block">Client Name:</span>
+          <strong class="text-charcoal fs-6">{{ enquiry.full_name }}</strong>
+        </div>
+        <div class="col-sm-6">
+          <span class="text-muted d-block">Business Name:</span>
+          <strong class="text-charcoal fs-6">{{ enquiry.business_name }}</strong>
+        </div>
+        <div class="col-sm-6">
+          <span class="text-muted d-block">WhatsApp Contact:</span>
+          <strong class="text-charcoal">{{ enquiry.whatsapp_number }}</strong>
+        </div>
+        <div class="col-sm-6">
+          <span class="text-muted d-block">Email Address:</span>
+          <strong class="text-charcoal">{{ enquiry.email or 'None provided' }}</strong>
+        </div>
+      </div>
+    </div>
+
+    <!-- Website & Package Selection -->
+    <div class="bg-white p-4 rounded-4 border border-subtle shadow-sm mb-4">
+      <h6 class="fw-bold font-heading text-charcoal mb-3 pb-2 border-bottom border-subtle">Selected Project Scope</h6>
+
+      <div class="row g-3 mb-3 small">
+        <div class="col-sm-6">
+          <span class="text-muted d-block">Interested Website Design:</span>
+          {% if enquiry.website %}
+          <div class="d-flex align-items-center gap-2 mt-1">
+            <img src="{{ enquiry.website.primary_image_url }}" alt="{{ enquiry.website.title }}" class="rounded-2 border" style="width: 50px; height: 35px; object-fit: cover;">
+            <div>
+              <strong class="text-charcoal d-block">{{ enquiry.website.title }}</strong>
+              <a href="{{ url_for('public.showcase_detail', slug=enquiry.website.slug) }}" target="_blank" class="text-primary small text-decoration-none">View Showcase</a>
+            </div>
+          </div>
+          {% else %}
+          <strong class="text-charcoal">General / Custom Consultation</strong>
+          {% endif %}
+        </div>
+
+        <div class="col-sm-6">
+          <span class="text-muted d-block">Selected Package Tier:</span>
+          {% if enquiry.package %}
+          <div class="mt-1">
+            <strong class="text-charcoal">{{ enquiry.package.name }}</strong>
+            <span class="badge bg-light text-dark border ms-1">{{ enquiry.package.formatted_price }}</span>
+          </div>
+          {% else %}
+          <strong class="text-charcoal">Not specified / Custom quote</strong>
+          {% endif %}
+        </div>
+      </div>
+
+      <!-- Add-ons -->
+      {% if enquiry.addons %}
+      <div class="mb-3 pt-3 border-top border-subtle">
+        <span class="text-muted d-block small mb-2">Requested Add-ons:</span>
+        <ul class="list-group list-group-flush small">
+          {% for ea in enquiry.addons %}
+          <li class="list-group-item d-flex justify-content-between align-items-center px-0 py-2">
+            <span><i class="bi bi-check2-circle text-success me-2"></i> {{ ea.add_on.name }}</span>
+            <span class="fw-bold text-charcoal">
+              {% if ea.price_at_enquiry %}₦{{ "{:,.0f}".format(ea.price_at_enquiry) }}{% else %}Quote on request{% endif %}
+            </span>
+          </li>
+          {% endfor %}
+        </ul>
+      </div>
+      {% endif %}
+
+      <!-- Automated Estimate & Budget -->
+      <div class="bg-warm-surface p-3 rounded-3 mt-3 d-flex justify-content-between align-items-center">
+        <div>
+          <span class="small text-muted d-block">Calculated Estimate:</span>
+          <span class="font-heading fw-bold fs-4 text-warning">
+            {% if enquiry.calculated_estimate %}₦{{ "{:,.0f}".format(enquiry.calculated_estimate) }}{% else %}Custom Quote{% endif %}
+          </span>
+        </div>
+        {% if enquiry.estimated_budget %}
+        <div class="text-end">
+          <span class="small text-muted d-block">Prospect Budget Range:</span>
+          <span class="badge bg-dark text-white">{{ enquiry.estimated_budget }}</span>
+        </div>
+        {% endif %}
+      </div>
+
+      {% if enquiry.additional_requirements %}
+      <div class="mt-3 pt-3 border-top border-subtle">
+        <span class="text-muted d-block small mb-1">Additional Requirements / Notes from Client:</span>
+        <div class="p-3 bg-light rounded-3 small text-charcoal" style="white-space: pre-line;">
+          {{ enquiry.additional_requirements }}
+        </div>
+      </div>
+      {% endif %}
+    </div>
+
+    <!-- Internal Notes Log -->
+    <div class="bg-white p-4 rounded-4 border border-subtle shadow-sm">
+      <h6 class="fw-bold font-heading text-charcoal mb-3 pb-2 border-bottom border-subtle">Internal Follow-Up Notes & Audit Timeline</h6>
+
+      <!-- Add note form -->
+      <form method="POST" action="{{ url_for('admin.enquiry_add_note', enquiry_id=enquiry.id) }}" class="mb-4">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <div class="mb-2">
+          {{ note_form.note_text(class="form-control small", rows="2", placeholder="e.g., Called client on WhatsApp, agreed on Standard Package with Paystack payment gateway...") }}
+        </div>
+        <button type="submit" class="btn btn-sm btn-dark">
+          <i class="bi bi-plus-circle"></i> Add Note
+        </button>
+      </form>
+
+      <!-- Notes list -->
+      <div class="timeline d-flex flex-column gap-3">
+        {% for note in enquiry.notes %}
+        <div class="p-3 bg-warm-surface rounded-3 border border-subtle small">
+          <div class="d-flex justify-content-between align-items-center mb-1 text-muted" style="font-size: 0.75rem;">
+            <span><i class="bi bi-person-fill"></i> {{ note.author_name }}</span>
+            <span>{{ note.created_at.strftime('%b %d, %Y %H:%M') }}</span>
+          </div>
+          <p class="mb-0 text-charcoal">{{ note.note_text }}</p>
+        </div>
+        {% else %}
+        <div class="text-muted small">No internal notes added yet.</div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+
+  <!-- Right Column: Status Update & Next Actions -->
+  <div class="col-lg-4">
+    <div class="bg-white p-4 rounded-4 border border-subtle shadow-sm mb-4">
+      <h6 class="fw-bold font-heading text-charcoal mb-3">Update Lead Status</h6>
+
+      <form method="POST" action="{{ url_for('admin.enquiry_update_status', enquiry_id=enquiry.id) }}">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <div class="mb-3">
+          <select name="status" class="form-select">
+            {% for s in statuses %}
+            <option value="{{ s }}" {% if enquiry.status == s %}selected{% endif %}>{{ s }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <button type="submit" class="btn btn-gold w-100 py-2">
+          Update Status
+        </button>
+      </form>
+    </div>
+
+    <!-- Suggested Workflow Steps -->
+    <div class="bg-warm-surface p-4 rounded-4 border border-subtle">
+      <h6 class="fw-bold font-heading text-charcoal mb-2">Deal Progression Steps</h6>
+      <ul class="list-unstyled small text-muted d-flex flex-column gap-2 mb-0">
+        <li class="d-flex align-items-center gap-2">
+          <i class="bi bi-arrow-right-circle text-warning"></i> <strong>Contacted:</strong> Intro WhatsApp message sent.
+        </li>
+        <li class="d-flex align-items-center gap-2">
+          <i class="bi bi-arrow-right-circle text-warning"></i> <strong>Quotation Sent:</strong> Scope & payment milestone breakdown provided.
+        </li>
+        <li class="d-flex align-items-center gap-2">
+          <i class="bi bi-arrow-right-circle text-warning"></i> <strong>Won:</strong> 50% deposit received, build in progress!
+        </li>
+      </ul>
+    </div>
+  </div>
+</div>
+{% endblock %}

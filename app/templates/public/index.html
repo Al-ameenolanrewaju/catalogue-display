@@ -1,0 +1,486 @@
+{% extends "base.html" %}
+
+{% block title %}{{ brand_name }} | Website Showroom & Client Acquisition Platform{% endblock %}
+
+{% block content %}
+<!-- 2. Hero Section -->
+<section class="py-5 py-lg-6 position-relative overflow-hidden" style="background: linear-gradient(180deg, rgba(244, 239, 230, 0.4) 0%, rgba(250, 248, 245, 1) 100%);">
+  <div class="container py-4 py-lg-5">
+    <div class="row align-items-center g-5">
+      <div class="col-lg-7 text-center text-lg-start">
+        <div class="d-inline-flex align-items-center gap-2 px-3 py-1 rounded-pill bg-white border border-subtle shadow-sm mb-4">
+          <span class="badge bg-warning text-dark fw-bold rounded-pill" style="font-size: 0.7rem;">PROVEN DESIGNS</span>
+          <span class="small fw-semibold text-charcoal">Live Demonstrations & Transparent Pricing</span>
+        </div>
+        <h1 class="display-4 fw-extrabold font-heading text-charcoal mb-4 lh-sm">
+          {{ hero_title }}
+        </h1>
+        <p class="lead text-muted-charcoal mb-5 pe-lg-4 fs-5">
+          {{ hero_subtitle }}
+        </p>
+
+        <div class="d-flex flex-column flex-sm-row gap-3 justify-content-center justify-content-lg-start">
+          <a href="{{ url_for('public.catalogue') }}" class="btn btn-gold btn-lg d-inline-flex align-items-center justify-content-center gap-2 px-4 shadow">
+            <i class="bi bi-grid-3x3-gap"></i>
+            <span>Browse Website Catalogue</span>
+          </a>
+          <a href="{{ url_for('public.enquire') }}" class="btn btn-outline-secondary btn-lg d-inline-flex align-items-center justify-content-center gap-2 px-4 bg-white text-dark border-subtle">
+            <i class="bi bi-chat-left-dots"></i>
+            <span>Request Custom Quote</span>
+          </a>
+        </div>
+
+        <div class="row g-4 mt-4 pt-3 border-top border-subtle text-start">
+          <div class="col-4">
+            <div class="font-heading fw-bold fs-4 text-charcoal">100%</div>
+            <div class="small text-muted">Mobile Ready</div>
+          </div>
+          <div class="col-4">
+            <div class="font-heading fw-bold fs-4 text-charcoal">5 to 10 Days</div>
+            <div class="small text-muted">Average Delivery</div>
+          </div>
+          <div class="col-4">
+            <div class="font-heading fw-bold fs-4 text-charcoal">₦0 Surprise</div>
+            <div class="small text-muted">Fixed Transparent Scope</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-lg-5">
+        <div class="position-relative">
+          <!-- Stacked preview card hero illustration -->
+          <div class="bg-white p-3 p-sm-4 rounded-4 shadow-lg border border-subtle">
+            <div class="d-flex align-items-center justify-content-between mb-3 border-bottom pb-2">
+              <div class="d-flex align-items-center gap-2">
+                <span class="rounded-circle bg-danger d-inline-block" style="width: 10px; height: 10px;"></span>
+                <span class="rounded-circle bg-warning d-inline-block" style="width: 10px; height: 10px;"></span>
+                <span class="rounded-circle bg-success d-inline-block" style="width: 10px; height: 10px;"></span>
+              </div>
+              <span class="badge bg-light text-muted border small">Live Showroom Experience</span>
+            </div>
+            <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=800&q=80" alt="Website Showroom" class="img-fluid rounded-3 mb-3 shadow-sm border" style="max-height: 280px; width: 100%; object-fit: cover;">
+            <div class="d-flex justify-content-between align-items-center">
+              <div>
+                <h6 class="fw-bold mb-0 text-charcoal">Pre-Built & Customizable</h6>
+                <small class="text-muted">Explore real layouts before investing a single Naira.</small>
+              </div>
+              <a href="{{ url_for('public.catalogue') }}" class="btn btn-sm btn-gold">Explore</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 3. Featured Website Showcases -->
+<section class="py-5 bg-warm-main">
+  <div class="container py-4">
+    <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-end mb-5">
+      <div>
+        <span class="text-uppercase tracking-wider small fw-bold text-warning" style="letter-spacing: 0.1em;">OUR SHOWROOM</span>
+        <h2 class="display-6 fw-bold font-heading text-charcoal mt-1">Featured Website Showcases</h2>
+        <p class="text-muted mb-0">Explore high-converting websites completed and approved for diverse business niches.</p>
+      </div>
+      <a href="{{ url_for('public.catalogue') }}" class="btn btn-outline-dark d-inline-flex align-items-center gap-2 mt-3 mt-md-0 border-subtle bg-white">
+        <span>View Full Catalogue</span>
+        <i class="bi bi-arrow-right"></i>
+      </a>
+    </div>
+
+    <div class="row g-4">
+      {% for project in featured_projects %}
+      <div class="col-lg-4 col-md-6">
+        <div class="showcase-card">
+          <div class="showcase-img-wrap">
+            <div class="showcase-badges">
+              {% if project.is_featured %}
+              <span class="custom-badge custom-badge-featured"><i class="bi bi-star-fill me-1"></i> Featured</span>
+              {% endif %}
+              <span class="custom-badge">{{ project.category.name if project.category else 'Business' }}</span>
+            </div>
+            <img src="{{ project.primary_image_url }}" alt="{{ project.title }}" loading="lazy">
+          </div>
+
+          <div class="p-4 d-flex flex-column flex-grow-1">
+            <div class="small text-muted fw-semibold mb-1 text-uppercase" style="font-size: 0.75rem; letter-spacing: 0.05em;">
+              Ideal for: {{ project.intended_business_type }}
+            </div>
+            <h5 class="fw-bold text-charcoal mb-2 font-heading">{{ project.title }}</h5>
+            <p class="text-muted small mb-3 flex-grow-1 line-clamp-2">
+              {{ project.short_description }}
+            </p>
+
+            <!-- Feature tags -->
+            <div class="d-flex flex-wrap gap-1 mb-4">
+              {% for feat in project.features[:3] %}
+              <span class="badge bg-light text-dark border font-normal" style="font-size: 0.72rem;">{{ feat.feature_text }}</span>
+              {% endfor %}
+            </div>
+
+            <!-- Actions -->
+            <div class="d-flex align-items-center justify-content-between pt-3 border-top border-subtle gap-2">
+              {% if project.live_demo_url %}
+              <a href="{{ url_for('public.live_preview', slug=project.slug) }}" class="btn btn-sm btn-outline-secondary d-inline-flex align-items-center gap-1 border-subtle" title="Test Live Interactive Demo">
+                <i class="bi bi-play-circle"></i> Live Demo
+              </a>
+              {% endif %}
+              <a href="{{ url_for('public.showcase_detail', slug=project.slug) }}" class="btn btn-sm btn-outline-dark">
+                Details
+              </a>
+              <a href="{{ url_for('public.enquire', website=project.slug) }}" class="btn btn-sm btn-gold d-inline-flex align-items-center gap-1" title="Get a Website Like This">
+                <span>Get This</span>
+                <i class="bi bi-chevron-right"></i>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<!-- 4. Website Categories -->
+<section class="py-5 bg-white border-top border-bottom border-subtle">
+  <div class="container py-4">
+    <div class="text-center max-w-700 mx-auto mb-5">
+      <span class="text-uppercase tracking-wider small fw-bold text-warning" style="letter-spacing: 0.1em;">INDUSTRY SOLUTIONS</span>
+      <h2 class="display-6 fw-bold font-heading text-charcoal mt-1">Tailored for Your Exact Industry</h2>
+      <p class="text-muted">Select your sector to view optimized designs built with your business workflow in mind.</p>
+    </div>
+
+    <div class="row g-3 justify-content-center">
+      {% for cat in categories %}
+      <div class="col-lg-3 col-md-4 col-sm-6">
+        <a href="{{ url_for('public.catalogue', category=cat.slug) }}" class="card text-decoration-none border border-subtle rounded-3 p-3 h-100 bg-warm-surface transition-all hover-shadow">
+          <div class="d-flex align-items-center justify-content-between mb-2">
+            <div class="bg-white rounded-3 p-2 shadow-sm text-warning">
+              {% if 'Fashion' in cat.name %}
+              <i class="bi bi-handbag fs-4"></i>
+              {% elif 'Electronics' in cat.name %}
+              <i class="bi bi-cpu fs-4"></i>
+              {% elif 'Furniture' in cat.name %}
+              <i class="bi bi-lamp fs-4"></i>
+              {% elif 'Automotive' in cat.name %}
+              <i class="bi bi-car-front fs-4"></i>
+              {% elif 'E-commerce' in cat.name %}
+              <i class="bi bi-cart3 fs-4"></i>
+              {% elif 'Custom' in cat.name %}
+              <i class="bi bi-code-slash fs-4"></i>
+              {% else %}
+              <i class="bi bi-briefcase fs-4"></i>
+              {% endif %}
+            </div>
+            <span class="badge bg-white text-muted border small">{{ cat.published_projects_count }} Designs</span>
+          </div>
+          <h6 class="fw-bold text-charcoal mb-1 font-heading">{{ cat.name }}</h6>
+          <small class="text-muted line-clamp-2">{{ cat.description }}</small>
+        </a>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<!-- 5. Reasons to Get a Professional Website -->
+<section class="py-5 bg-warm-main">
+  <div class="container py-4">
+    <div class="text-center max-w-700 mx-auto mb-5">
+      <span class="text-uppercase tracking-wider small fw-bold text-warning" style="letter-spacing: 0.1em;">WHY TAKE THE LEAP?</span>
+      <h2 class="display-6 fw-bold font-heading text-charcoal mt-1">Why Your Business Needs More Than Social Media</h2>
+      <p class="text-muted">Relying solely on Instagram or TikTok leaves your revenue vulnerable to shadowbans, algorithmic changes, and lost customer confidence.</p>
+    </div>
+
+    <div class="row g-4">
+      <div class="col-lg-4 col-md-6">
+        <div class="bg-white p-4 rounded-4 border border-subtle h-100 shadow-sm">
+          <div class="bg-warm-surface text-warning rounded-3 d-inline-flex p-3 mb-3">
+            <i class="bi bi-shield-check fs-3"></i>
+          </div>
+          <h5 class="fw-bold font-heading text-charcoal">Rock-Solid Credibility</h5>
+          <p class="text-muted small mb-0">
+            High-paying clients verify your legitimacy before sending funds. A dedicated website with professional branding signals that you are an established, trustworthy enterprise.
+          </p>
+        </div>
+      </div>
+
+      <div class="col-lg-4 col-md-6">
+        <div class="bg-white p-4 rounded-4 border border-subtle h-100 shadow-sm">
+          <div class="bg-warm-surface text-warning rounded-3 d-inline-flex p-3 mb-3">
+            <i class="bi bi-currency-dollar fs-3"></i>
+          </div>
+          <h5 class="fw-bold font-heading text-charcoal">Automated 24/7 Sales</h5>
+          <p class="text-muted small mb-0">
+            Stop losing buyers who want to shop at 11:00 PM while you are asleep. Your website accepts inquiries, generates WhatsApp orders, and processes payments around the clock.
+          </p>
+        </div>
+      </div>
+
+      <div class="col-lg-4 col-md-6">
+        <div class="bg-white p-4 rounded-4 border border-subtle h-100 shadow-sm">
+          <div class="bg-warm-surface text-warning rounded-3 d-inline-flex p-3 mb-3">
+            <i class="bi bi-google fs-3"></i>
+          </div>
+          <h5 class="fw-bold font-heading text-charcoal">Discovered on Google</h5>
+          <p class="text-muted small mb-0">
+            People actively search Google for products and services in your city every day. An SEO-optimized website captures qualified, high-intent prospects that social media algorithms miss.
+          </p>
+        </div>
+      </div>
+
+      <div class="col-lg-4 col-md-6">
+        <div class="bg-white p-4 rounded-4 border border-subtle h-100 shadow-sm">
+          <div class="bg-warm-surface text-warning rounded-3 d-inline-flex p-3 mb-3">
+            <i class="bi bi-database-lock fs-3"></i>
+          </div>
+          <h5 class="fw-bold font-heading text-charcoal">You Own the Audience</h5>
+          <p class="text-muted small mb-0">
+            Social accounts can be disabled, restricted, or hijacked without notice. With your own website, you own your customer data, lead contacts, and brand showroom forever.
+          </p>
+        </div>
+      </div>
+
+      <div class="col-lg-4 col-md-6">
+        <div class="bg-white p-4 rounded-4 border border-subtle h-100 shadow-sm">
+          <div class="bg-warm-surface text-warning rounded-3 d-inline-flex p-3 mb-3">
+            <i class="bi bi-sliders fs-3"></i>
+          </div>
+          <h5 class="fw-bold font-heading text-charcoal">No Distractions or Competitors</h5>
+          <p class="text-muted small mb-0">
+            On social apps, your competitor’s sponsored ad is just one swipe away. On your website, you have your client’s undivided attention to present your unique value proposition.
+          </p>
+        </div>
+      </div>
+
+      <div class="col-lg-4 col-md-6">
+        <div class="bg-white p-4 rounded-4 border border-subtle h-100 shadow-sm">
+          <div class="bg-warm-surface text-warning rounded-3 d-inline-flex p-3 mb-3">
+            <i class="bi bi-graph-up-arrow fs-3"></i>
+          </div>
+          <h5 class="fw-bold font-heading text-charcoal">Premium Pricing Power</h5>
+          <p class="text-muted small mb-0">
+            Businesses with custom websites charge higher rates. Presentation drives perceived value, enabling you to escape destructive price-slashing battles.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 6. How the Process Works -->
+<section id="process" class="py-5 bg-white border-top border-bottom border-subtle">
+  <div class="container py-4">
+    <div class="text-center max-w-700 mx-auto mb-5">
+      <span class="text-uppercase tracking-wider small fw-bold text-warning" style="letter-spacing: 0.1em;">TRANSPARENT WORKFLOW</span>
+      <h2 class="display-6 fw-bold font-heading text-charcoal mt-1">How We Bring Your Website to Life</h2>
+      <p class="text-muted">A clear, stress-free four-step journey from design exploration to revenue launch.</p>
+    </div>
+
+    <div class="row g-4">
+      <div class="col-lg-3 col-md-6 text-center text-md-start">
+        <div class="p-3">
+          <div class="font-heading fw-extrabold display-5 text-warning mb-2 opacity-75">01</div>
+          <h5 class="fw-bold font-heading text-charcoal mb-2">Explore & Select Concept</h5>
+          <p class="text-muted small">
+            Browse our live showroom, test responsive demos, and identify a layout structure that matches your business model.
+          </p>
+        </div>
+      </div>
+
+      <div class="col-lg-3 col-md-6 text-center text-md-start">
+        <div class="p-3">
+          <div class="font-heading fw-extrabold display-5 text-warning mb-2 opacity-75">02</div>
+          <h5 class="fw-bold font-heading text-charcoal mb-2">Choose Package & Add-Ons</h5>
+          <p class="text-muted small">
+            Pick a package tier, select required functionality (payment gateways, WhatsApp ordering, booking systems), and submit your brief.
+          </p>
+        </div>
+      </div>
+
+      <div class="col-lg-3 col-md-6 text-center text-md-start">
+        <div class="p-3">
+          <div class="font-heading fw-extrabold display-5 text-warning mb-2 opacity-75">03</div>
+          <h5 class="fw-bold font-heading text-charcoal mb-2">Customisation & Build</h5>
+          <p class="text-muted small">
+            We adapt the layout with your brand identity, colors, products, copy, and integrate payment/checkout systems within 5 to 10 days.
+          </p>
+        </div>
+      </div>
+
+      <div class="col-lg-3 col-md-6 text-center text-md-start">
+        <div class="p-3">
+          <div class="font-heading fw-extrabold display-5 text-warning mb-2 opacity-75">04</div>
+          <h5 class="fw-bold font-heading text-charcoal mb-2">Review, Launch & Sell</h5>
+          <p class="text-muted small">
+            We review the live staging site together, connect your custom domain, provide training, and open the doors for customer orders.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 7. Package Overview -->
+<section class="py-5 bg-warm-main">
+  <div class="container py-4">
+    <div class="text-center max-w-700 mx-auto mb-5">
+      <span class="text-uppercase tracking-wider small fw-bold text-warning" style="letter-spacing: 0.1em;">CLEAR PRICING</span>
+      <h2 class="display-6 fw-bold font-heading text-charcoal mt-1">Packages Built for Growth</h2>
+      <p class="text-muted">Predictable fixed pricing with no hidden surprises. All packages include mobile optimization and launch guidance.</p>
+    </div>
+
+    <div class="row g-4 align-items-stretch justify-content-center">
+      {% for pkg in packages %}
+      <div class="col-lg-3 col-md-6">
+        <div class="package-card {% if pkg.is_recommended %}recommended{% endif %}">
+          <h5 class="fw-bold font-heading text-charcoal mb-1">{{ pkg.name }}</h5>
+          <p class="text-muted small mb-3">{{ pkg.description }}</p>
+
+          <div class="mb-4 pb-3 border-bottom border-subtle">
+            <span class="font-heading fw-extrabold fs-3 text-charcoal">{{ pkg.formatted_price }}</span>
+            {% if pkg.price %}
+            <span class="text-muted small">/ one-time</span>
+            {% endif %}
+          </div>
+
+          <ul class="list-unstyled mb-4 flex-grow-1">
+            {% for feat in pkg.features[:6] %}
+            <li class="feature-item">
+              {% if feat.is_included %}
+              <i class="bi bi-check-circle-fill feature-icon-check"></i>
+              <span>{{ feat.feature_text }}</span>
+              {% else %}
+              <i class="bi bi-x-circle feature-icon-cross"></i>
+              <span class="text-muted text-decoration-line-through">{{ feat.feature_text }}</span>
+              {% endif %}
+            </li>
+            {% endfor %}
+          </ul>
+
+          <a href="{{ url_for('public.enquire', package=pkg.slug) }}" class="btn {% if pkg.is_recommended %}btn-gold{% else %}btn-outline-dark{% endif %} w-100">
+            Select {{ pkg.name }}
+          </a>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+
+    <div class="text-center mt-5">
+      <a href="{{ url_for('public.packages') }}" class="btn btn-outline-secondary bg-white border-subtle text-charcoal">
+        <span>View Full Package Comparison & Add-On Calculator</span>
+        <i class="bi bi-arrow-right ms-1"></i>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- 8. Frequently Asked Questions -->
+<section id="faq" class="py-5 bg-white border-top border-bottom border-subtle">
+  <div class="container py-4">
+    <div class="text-center max-w-700 mx-auto mb-5">
+      <span class="text-uppercase tracking-wider small fw-bold text-warning" style="letter-spacing: 0.1em;">ANSWERS & CLARITY</span>
+      <h2 class="display-6 fw-bold font-heading text-charcoal mt-1">Frequently Asked Questions</h2>
+      <p class="text-muted">Everything you need to know about purchasing and launching your website with us.</p>
+    </div>
+
+    <div class="row justify-content-center">
+      <div class="col-lg-8">
+        <div class="accordion" id="faqAccordion">
+          <div class="accordion-item">
+            <h2 class="accordion-header" id="headingOne">
+              <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                How long does it take to deliver my website?
+              </button>
+            </h2>
+            <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#faqAccordion">
+              <div class="accordion-body small text-muted">
+                Starter and standard catalog websites are typically completed within 5 to 10 business days once you supply your logos, product photos, and business details. Complex custom web applications take 2 to 4 weeks depending on scope.
+              </div>
+            </div>
+          </div>
+
+          <div class="accordion-item">
+            <h2 class="accordion-header" id="headingTwo">
+              <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                Can I request custom features not shown in the catalogue?
+              </button>
+            </h2>
+            <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#faqAccordion">
+              <div class="accordion-body small text-muted">
+                Absolutely! Our catalogue showcases proven starting points, but every project can be customized with specific payment gateways, wholesale pricing, booking engines, or custom dashboards.
+              </div>
+            </div>
+          </div>
+
+          <div class="accordion-item">
+            <h2 class="accordion-header" id="headingThree">
+              <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                Will my website work properly on mobile phones?
+              </button>
+            </h2>
+            <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingThree" data-bs-parent="#faqAccordion">
+              <div class="accordion-body small text-muted">
+                Yes. In Nigeria and globally, over 80% of e-commerce traffic originates from mobile devices. Every website we build is rigorously tested across iPhones, Android devices, tablets, and desktop computers.
+              </div>
+            </div>
+          </div>
+
+          <div class="accordion-item">
+            <h2 class="accordion-header" id="headingFour">
+              <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFour" aria-expanded="false" aria-controls="collapseFour">
+                Can I update prices and upload new products myself later?
+              </button>
+            </h2>
+            <div id="collapseFour" class="accordion-collapse collapse" aria-labelledby="headingFour" data-bs-parent="#faqAccordion">
+              <div class="accordion-body small text-muted">
+                Yes. We provide an intuitive administrative dashboard where you or your staff can add products, change prices, update phone numbers, and view customer inquiries without touching any code.
+              </div>
+            </div>
+          </div>
+
+          <div class="accordion-item">
+            <h2 class="accordion-header" id="headingFive">
+              <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFive" aria-expanded="false" aria-controls="collapseFive">
+                How does payment work?
+              </button>
+            </h2>
+            <div id="collapseFive" class="accordion-collapse collapse" aria-labelledby="headingFive" data-bs-parent="#faqAccordion">
+              <div class="accordion-body small text-muted">
+                We typically operate on a milestone structure: 50% commitment deposit to commence work, and the remaining 50% upon final staging review and handover of your live domain.
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 9. Final Enquiry Call to Action -->
+<section class="py-5 bg-warm-soft">
+  <div class="container py-5 text-center">
+    <div class="max-w-700 mx-auto">
+      <div class="bg-white rounded-circle d-inline-flex p-3 shadow-sm mb-3 text-warning">
+        <i class="bi bi-rocket-takeoff fs-2"></i>
+      </div>
+      <h2 class="display-6 fw-bold font-heading text-charcoal mb-3">
+        Ready to Turn Visitors Into Paying Clients?
+      </h2>
+      <p class="lead text-muted fs-6 mb-4">
+        Select a design from our showroom or send us your custom requirements. We will prepare an exact proposal and timeline for your business today.
+      </p>
+      <div class="d-flex flex-column flex-sm-row justify-content-center gap-3">
+        <a href="{{ url_for('public.enquire') }}" class="btn btn-gold btn-lg px-4 shadow">
+          <span>Start Your Enquiry Now</span>
+          <i class="bi bi-arrow-right ms-2"></i>
+        </a>
+        <a href="https://wa.me/{{ whatsapp_number }}?text=Hello%20{{ brand_name }},%20I%20am%20ready%20to%20discuss%20a%20website%20for%20my%20business." target="_blank" class="btn btn-outline-dark btn-lg px-4 bg-white border-subtle">
+          <i class="bi bi-whatsapp text-success me-2"></i>
+          <span>Chat on WhatsApp</span>
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

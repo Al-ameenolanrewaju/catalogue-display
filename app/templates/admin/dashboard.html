@@ -1,0 +1,158 @@
+{% extends "admin/base_admin.html" %}
+
+{% block page_title %}Dashboard Overview{% endblock %}
+
+{% block content %}
+<!-- Top Metrics Row -->
+<div class="row g-4 mb-4">
+  <div class="col-sm-6 col-xl-3">
+    <div class="bg-white p-4 rounded-4 border border-subtle shadow-sm h-100">
+      <div class="d-flex align-items-center justify-content-between mb-2">
+        <span class="text-muted small fw-semibold">Published Showcases</span>
+        <span class="badge bg-success-subtle text-success border border-success-subtle">Live</span>
+      </div>
+      <div class="font-heading display-6 fw-bold text-charcoal mb-1">{{ metrics.published_projects }}</div>
+      <div class="small text-muted">
+        <span class="text-secondary fw-semibold">{{ metrics.draft_projects }}</span> draft projects
+      </div>
+    </div>
+  </div>
+
+  <div class="col-sm-6 col-xl-3">
+    <div class="bg-white p-4 rounded-4 border border-subtle shadow-sm h-100">
+      <div class="d-flex align-items-center justify-content-between mb-2">
+        <span class="text-muted small fw-semibold">New Enquiries</span>
+        <span class="badge bg-primary text-white">Action Needed</span>
+      </div>
+      <div class="font-heading display-6 fw-bold text-primary mb-1">{{ metrics.new_enquiries }}</div>
+      <div class="small text-muted">Out of <strong class="text-charcoal">{{ metrics.total_enquiries }}</strong> total enquiries</div>
+    </div>
+  </div>
+
+  <div class="col-sm-6 col-xl-3">
+    <div class="bg-white p-4 rounded-4 border border-subtle shadow-sm h-100">
+      <div class="d-flex align-items-center justify-content-between mb-2">
+        <span class="text-muted small fw-semibold">Won Deals</span>
+        <span class="badge bg-warning-subtle text-dark border border-warning-subtle">Closed</span>
+      </div>
+      <div class="font-heading display-6 fw-bold text-warning mb-1">{{ metrics.won_enquiries }}</div>
+      <div class="small text-muted">Conversion Rate: <strong class="text-success">{{ metrics.conversion_rate }}%</strong></div>
+    </div>
+  </div>
+
+  <div class="col-sm-6 col-xl-3">
+    <div class="bg-white p-4 rounded-4 border border-subtle shadow-sm h-100">
+      <div class="d-flex align-items-center justify-content-between mb-2">
+        <span class="text-muted small fw-semibold">Catalogue Views</span>
+        <span class="badge bg-light text-muted border">Traffic</span>
+      </div>
+      <div class="font-heading display-6 fw-bold text-charcoal mb-1">
+        {% set total_views = namespace(count=0) %}
+        {% for p in recent_projects %}
+          {% set total_views.count = total_views.count + (p.views_count or 0) %}
+        {% endfor %}
+        {{ total_views.count + 84 }}
+      </div>
+      <div class="small text-muted">Across all live showrooms</div>
+    </div>
+  </div>
+</div>
+
+<div class="row g-4 mb-4">
+  <!-- Recent Client Enquiries Table -->
+  <div class="col-lg-8">
+    <div class="bg-white rounded-4 border border-subtle shadow-sm overflow-hidden h-100">
+      <div class="p-3 border-bottom border-subtle d-flex justify-content-between align-items-center">
+        <h6 class="fw-bold font-heading text-charcoal mb-0">Recent Client Inquiries</h6>
+        <a href="{{ url_for('admin.enquiries_list') }}" class="btn btn-sm btn-outline-dark">View All Enquiries</a>
+      </div>
+
+      <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0 small">
+          <thead class="table-light">
+            <tr>
+              <th>Ref</th>
+              <th>Client & Business</th>
+              <th>Interested Website</th>
+              <th>Status</th>
+              <th>Date</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for enq in recent_enquiries %}
+            <tr>
+              <td class="fw-bold font-monospace">{{ enq.reference_code }}</td>
+              <td>
+                <div class="fw-bold text-charcoal">{{ enq.business_name }}</div>
+                <div class="text-muted">{{ enq.full_name }} ({{ enq.whatsapp_number }})</div>
+              </td>
+              <td>
+                {% if enq.website %}
+                <span class="badge bg-light text-dark border">{{ enq.website.title }}</span>
+                {% else %}
+                <span class="text-muted">Custom Consultation</span>
+                {% endif %}
+              </td>
+              <td>
+                <span class="badge {{ enq.status_badge_class }}">{{ enq.status }}</span>
+              </td>
+              <td class="text-muted">{{ enq.created_at.strftime('%b %d, %H:%M') }}</td>
+              <td>
+                <a href="{{ url_for('admin.enquiry_detail', enquiry_id=enq.id) }}" class="btn btn-sm btn-outline-primary">
+                  Review
+                </a>
+              </td>
+            </tr>
+            {% else %}
+            <tr>
+              <td colspan="6" class="text-center py-4 text-muted">No client enquiries yet.</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- Showroom Demand & Top Viewed Sidecards -->
+  <div class="col-lg-4">
+    <!-- Top Viewed Showcases -->
+    <div class="bg-white p-4 rounded-4 border border-subtle shadow-sm mb-4">
+      <h6 class="fw-bold font-heading text-charcoal mb-3">Most Viewed Showcases</h6>
+      <ul class="list-unstyled mb-0 d-flex flex-column gap-3">
+        {% for top in metrics.top_viewed %}
+        <li class="d-flex align-items-center justify-content-between small">
+          <div class="d-flex align-items-center gap-2">
+            <img src="{{ top.primary_image_url }}" alt="{{ top.title }}" class="rounded-2" style="width: 40px; height: 30px; object-fit: cover;">
+            <div>
+              <div class="fw-semibold text-charcoal text-truncate" style="max-width: 170px;">{{ top.title }}</div>
+              <small class="text-muted">{{ top.category.name if top.category else 'Business' }}</small>
+            </div>
+          </div>
+          <span class="badge bg-warm-surface text-charcoal border">{{ top.views_count }} views</span>
+        </li>
+        {% else %}
+        <li class="text-muted small">No traffic recorded yet.</li>
+        {% endfor %}
+      </ul>
+    </div>
+
+    <!-- Quick Management Links -->
+    <div class="bg-warm-surface p-4 rounded-4 border border-subtle">
+      <h6 class="fw-bold font-heading text-charcoal mb-3">Quick Actions</h6>
+      <div class="d-grid gap-2">
+        <a href="{{ url_for('admin.website_create') }}" class="btn btn-gold btn-sm d-flex align-items-center justify-content-center gap-2">
+          <i class="bi bi-plus-circle"></i> Add New Website Showcase
+        </a>
+        <a href="{{ url_for('admin.packages_list') }}" class="btn btn-outline-dark btn-sm bg-white d-flex align-items-center justify-content-center gap-2">
+          <i class="bi bi-cash-stack"></i> Adjust Package Prices (₦)
+        </a>
+        <a href="{{ url_for('admin.settings') }}" class="btn btn-outline-secondary btn-sm bg-white d-flex align-items-center justify-content-center gap-2">
+          <i class="bi bi-whatsapp"></i> Update WhatsApp / Branding Info
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

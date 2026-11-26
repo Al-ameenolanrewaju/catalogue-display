@@ -1,0 +1,133 @@
+{% extends "admin/base_admin.html" %}
+
+{% block page_title %}Website Showcases{% endblock %}
+
+{% block content %}
+<div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-4">
+  <div>
+    <h4 class="fw-bold font-heading text-charcoal mb-1">Website Projects & Showroom</h4>
+    <p class="text-muted small mb-0">Manage published website designs, live demonstration links, and screenshots.</p>
+  </div>
+  <a href="{{ url_for('admin.website_create') }}" class="btn btn-gold d-inline-flex align-items-center gap-2">
+    <i class="bi bi-plus-lg"></i>
+    <span>Add New Website</span>
+  </a>
+</div>
+
+<!-- Filters Bar -->
+<div class="bg-white p-3 rounded-4 border border-subtle shadow-sm mb-4">
+  <form method="GET" action="{{ url_for('admin.websites_list') }}" class="row g-2 align-items-center">
+    <div class="col-md-5">
+      <div class="input-group input-group-sm">
+        <span class="input-group-text bg-white border-subtle text-muted"><i class="bi bi-search"></i></span>
+        <input type="text" name="q" value="{{ current_search }}" class="form-control" placeholder="Search by title or business type...">
+      </div>
+    </div>
+    <div class="col-md-3">
+      <select name="status" class="form-select form-select-sm" onchange="this.form.submit()">
+        <option value="">All Statuses (Published & Drafts)</option>
+        <option value="published" {% if current_filter == 'published' %}selected{% endif %}>Published Only</option>
+        <option value="draft" {% if current_filter == 'draft' %}selected{% endif %}>Drafts Only</option>
+      </select>
+    </div>
+    <div class="col-md-3">
+      <select name="category_id" class="form-select form-select-sm" onchange="this.form.submit()">
+        <option value="">All Categories</option>
+        {% for cat in categories %}
+        <option value="{{ cat.id }}" {% if request.args.get('category_id', type=int) == cat.id %}selected{% endif %}>{{ cat.name }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div class="col-md-1">
+      <button type="submit" class="btn btn-sm btn-outline-dark w-100">Filter</button>
+    </div>
+  </form>
+</div>
+
+<!-- Websites Table -->
+<div class="bg-white rounded-4 border border-subtle shadow-sm overflow-hidden">
+  <div class="table-responsive">
+    <table class="table table-hover align-middle mb-0 small">
+      <thead class="table-light">
+        <tr>
+          <th style="width: 70px;">Preview</th>
+          <th>Title & Target Business</th>
+          <th>Category</th>
+          <th>Status</th>
+          <th>Featured</th>
+          <th>Views</th>
+          <th class="text-end">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for project in projects %}
+        <tr>
+          <td>
+            <img src="{{ project.primary_image_url }}" alt="{{ project.title }}" class="rounded-2 border" style="width: 60px; height: 42px; object-fit: cover;">
+          </td>
+          <td>
+            <div class="fw-bold text-charcoal">{{ project.title }}</div>
+            <div class="text-muted small">Target: {{ project.intended_business_type }}</div>
+          </td>
+          <td>
+            <span class="badge bg-light text-dark border">{{ project.category.name if project.category else 'Uncategorized' }}</span>
+          </td>
+          <td>
+            <form method="POST" action="{{ url_for('admin.website_toggle_status', project_id=project.id) }}" class="d-inline">
+              <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+              {% if project.is_published %}
+              <button type="submit" class="badge bg-success border-0 text-white cursor-pointer" title="Click to Unpublish">
+                <i class="bi bi-check-circle me-1"></i> Published
+              </button>
+              {% else %}
+              <button type="submit" class="badge bg-secondary border-0 text-white cursor-pointer" title="Click to Publish">
+                <i class="bi bi-clock me-1"></i> Draft
+              </button>
+              {% endif %}
+            </form>
+          </td>
+          <td>
+            {% if project.is_featured %}
+            <span class="badge bg-warning text-dark"><i class="bi bi-star-fill"></i> Yes</span>
+            {% else %}
+            <span class="text-muted">No</span>
+            {% endif %}
+          </td>
+          <td>
+            <span class="text-muted"><i class="bi bi-eye"></i> {{ project.views_count }}</span>
+          </td>
+          <td class="text-end">
+            <div class="btn-group btn-group-sm">
+              <a href="{{ url_for('public.showcase_detail', slug=project.slug) }}" target="_blank" class="btn btn-outline-secondary" title="View Public Page">
+                <i class="bi bi-eye"></i>
+              </a>
+              {% if project.live_demo_url %}
+              <a href="{{ url_for('public.live_preview', slug=project.slug) }}" target="_blank" class="btn btn-outline-secondary" title="Test Live Demo Frame">
+                <i class="bi bi-display"></i>
+              </a>
+              {% endif %}
+              <a href="{{ url_for('admin.website_edit', project_id=project.id) }}" class="btn btn-outline-dark" title="Edit Showcase">
+                <i class="bi bi-pencil"></i>
+              </a>
+              <form method="POST" action="{{ url_for('admin.website_delete', project_id=project.id) }}" class="d-inline" onsubmit="return confirm('Are you sure you want to permanently delete this website project?');">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                <button type="submit" class="btn btn-outline-danger" title="Delete Showcase">
+                  <i class="bi bi-trash"></i>
+                </button>
+              </form>
+            </div>
+          </td>
+        </tr>
+        {% else %}
+        <tr>
+          <td colspan="7" class="text-center py-5 text-muted">
+            <i class="bi bi-folder2-open fs-2 d-block mb-2"></i>
+            No website projects found. <a href="{{ url_for('admin.website_create') }}">Add your first project</a>.
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

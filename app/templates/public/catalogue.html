@@ -1,0 +1,130 @@
+{% extends "base.html" %}
+
+{% block title %}Website Showroom Catalogue | {{ brand_name }}{% endblock %}
+
+{% block content %}
+<section class="py-5 bg-warm-surface border-bottom border-subtle">
+  <div class="container py-3">
+    <div class="row align-items-center justify-content-between g-4">
+      <div class="col-lg-6">
+        <span class="badge bg-white text-charcoal border small mb-2">DIGITAL SHOWROOM</span>
+        <h1 class="display-6 fw-bold font-heading text-charcoal mb-2">Explore Website Designs</h1>
+        <p class="text-muted mb-0">Browse completed, approved website concepts ready to be customized and launched for your business.</p>
+      </div>
+
+      <!-- Live Search & Filters -->
+      <div class="col-lg-6">
+        <form method="GET" action="{{ url_for('public.catalogue') }}" class="d-flex flex-column flex-sm-row gap-2">
+          {% if selected_category %}
+          <input type="hidden" name="category" value="{{ selected_category.slug }}">
+          {% endif %}
+          <div class="input-group">
+            <span class="input-group-text bg-white border-subtle text-muted"><i class="bi bi-search"></i></span>
+            <input type="text" name="q" value="{{ search }}" class="form-control" placeholder="Search by industry, feature, or keyword...">
+          </div>
+          <select name="sort" class="form-select flex-shrink-0" style="width: auto;" onchange="this.form.submit()">
+            <option value="featured" {% if sort_by == 'featured' %}selected{% endif %}>Featured First</option>
+            <option value="newest" {% if sort_by == 'newest' %}selected{% endif %}>Newest First</option>
+            <option value="views" {% if sort_by == 'views' %}selected{% endif %}>Most Popular</option>
+            <option value="title" {% if sort_by == 'title' %}selected{% endif %}>Title (A-Z)</option>
+          </select>
+          <button type="submit" class="btn btn-gold">Search</button>
+        </form>
+      </div>
+    </div>
+
+    <!-- Category Filter Chips -->
+    <div class="d-flex align-items-center gap-2 overflow-x-auto py-3 mt-4 border-top border-subtle">
+      <a href="{{ url_for('public.catalogue', q=search, sort=sort_by) }}" class="category-chip {% if not selected_category %}active{% endif %}">
+        <i class="bi bi-grid-fill"></i>
+        <span>All Categories</span>
+      </a>
+      {% for cat in categories %}
+      <a href="{{ url_for('public.catalogue', category=cat.slug, q=search, sort=sort_by) }}" class="category-chip {% if selected_category and selected_category.id == cat.id %}active{% endif %}">
+        <span>{{ cat.name }}</span>
+        <span class="badge bg-white text-muted border" style="font-size: 0.68rem;">{{ cat.published_projects_count }}</span>
+      </a>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<!-- Catalogue Grid -->
+<section class="py-5 bg-warm-main">
+  <div class="container py-3">
+    <!-- Active filter notification -->
+    <div class="d-flex justify-content-between align-items-center mb-4 pb-2 border-bottom border-subtle">
+      <div class="text-muted small">
+        Showing <span class="fw-bold text-charcoal">{{ projects|length }}</span> design{{ 's' if projects|length != 1 else '' }}
+        {% if selected_category %} in <span class="badge bg-warm-surface text-charcoal border">{{ selected_category.name }}</span>{% endif %}
+        {% if search %} matching <span class="badge bg-light text-dark border">"{{ search }}"</span>{% endif %}
+      </div>
+      {% if selected_category or search %}
+      <a href="{{ url_for('public.catalogue') }}" class="btn btn-sm btn-link text-decoration-none text-muted">
+        <i class="bi bi-x-circle"></i> Clear Filters
+      </a>
+      {% endif %}
+    </div>
+
+    {% if projects %}
+    <div class="row g-4">
+      {% for project in projects %}
+      <div class="col-lg-4 col-md-6">
+        <div class="showcase-card">
+          <div class="showcase-img-wrap">
+            <div class="showcase-badges">
+              {% if project.is_featured %}
+              <span class="custom-badge custom-badge-featured"><i class="bi bi-star-fill me-1"></i> Featured</span>
+              {% endif %}
+              <span class="custom-badge">{{ project.category.name if project.category else 'Business' }}</span>
+            </div>
+            <img src="{{ project.primary_image_url }}" alt="{{ project.title }}" loading="lazy">
+          </div>
+
+          <div class="p-4 d-flex flex-column flex-grow-1">
+            <div class="small text-muted fw-semibold mb-1 text-uppercase" style="font-size: 0.72rem; letter-spacing: 0.05em;">
+              Target: {{ project.intended_business_type }}
+            </div>
+            <h5 class="fw-bold text-charcoal mb-2 font-heading">{{ project.title }}</h5>
+            <p class="text-muted small mb-3 flex-grow-1 line-clamp-2">
+              {{ project.short_description }}
+            </p>
+
+            <!-- Feature tags -->
+            <div class="d-flex flex-wrap gap-1 mb-4">
+              {% for feat in project.features[:3] %}
+              <span class="badge bg-light text-dark border font-normal" style="font-size: 0.72rem;">{{ feat.feature_text }}</span>
+              {% endfor %}
+            </div>
+
+            <!-- Actions -->
+            <div class="d-flex align-items-center justify-content-between pt-3 border-top border-subtle gap-2">
+              {% if project.live_demo_url %}
+              <a href="{{ url_for('public.live_preview', slug=project.slug) }}" class="btn btn-sm btn-outline-secondary d-inline-flex align-items-center gap-1 border-subtle" title="Test Live Interactive Demo">
+                <i class="bi bi-play-circle"></i> Live Demo
+              </a>
+              {% endif %}
+              <a href="{{ url_for('public.showcase_detail', slug=project.slug) }}" class="btn btn-sm btn-outline-dark">
+                View Details
+              </a>
+              <a href="{{ url_for('public.enquire', website=project.slug) }}" class="btn btn-sm btn-gold d-inline-flex align-items-center gap-1" title="Get a Website Like This">
+                <span>Get This</span>
+                <i class="bi bi-chevron-right"></i>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+    {% else %}
+    <div class="text-center py-5 bg-white rounded-4 border border-subtle my-4">
+      <div class="text-muted fs-1 mb-3"><i class="bi bi-folder-x"></i></div>
+      <h4 class="fw-bold text-charcoal mb-2">No Websites Found</h4>
+      <p class="text-muted mb-4">We could not find any design matching your criteria. Try adjusting your search term or category.</p>
+      <a href="{{ url_for('public.catalogue') }}" class="btn btn-gold">View All Showroom Designs</a>
+    </div>
+    {% endif %}
+  </div>
+</section>
+{% endblock %}

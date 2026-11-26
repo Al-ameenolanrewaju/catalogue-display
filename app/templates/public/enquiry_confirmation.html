@@ -1,0 +1,131 @@
+{% extends "base.html" %}
+
+{% block title %}Enquiry Received | Reference #{{ enquiry.reference_code }}{% endblock %}
+
+{% block content %}
+<section class="py-5 bg-warm-surface border-bottom border-subtle">
+  <div class="container py-4 text-center">
+    <div class="bg-success text-white rounded-circle d-inline-flex align-items-center justify-content-center shadow mb-3" style="width: 64px; height: 64px;">
+      <i class="bi bi-check-lg fs-1"></i>
+    </div>
+    <h1 class="display-5 fw-bold font-heading text-charcoal mb-2">Thank You, {{ enquiry.full_name }}!</h1>
+    <p class="lead text-muted fs-6 mb-2">Your website enquiry has been received and saved successfully.</p>
+    <div>
+      <span class="badge bg-white text-charcoal border fs-6 px-3 py-2">
+        Reference Code: <strong class="text-warning">{{ enquiry.reference_code }}</strong>
+      </span>
+    </div>
+  </div>
+</section>
+
+<!-- Confirmation Actions & Summary -->
+<section class="py-5 bg-warm-main">
+  <div class="container py-2">
+    <div class="row g-4 justify-content-center">
+      <div class="col-lg-8">
+        <!-- Direct WhatsApp Action Banner (PRD Requirement 7) -->
+        <div class="bg-white p-4 p-md-5 rounded-4 border border-warning shadow-sm mb-4 text-center" style="border-width: 2px !important;">
+          <h4 class="fw-bold font-heading text-charcoal mb-2">Connect Directly on WhatsApp</h4>
+          <p class="text-muted small max-w-700 mx-auto mb-4">
+            To expedite your quotation, click the button below. It will open WhatsApp with your pre-formatted enquiry summary ready to send directly to our lead developer.
+          </p>
+
+          <a href="{{ whatsapp_url }}" target="_blank" class="btn btn-success btn-lg px-4 py-3 shadow d-inline-flex align-items-center justify-content-center gap-2 mb-3">
+            <i class="bi bi-whatsapp fs-4"></i>
+            <span>Continue to WhatsApp with Enquiry Details</span>
+          </a>
+
+          <div class="small text-muted">
+            Direct Line: <strong class="text-dark">{{ contact_phone }}</strong>
+          </div>
+        </div>
+
+        <!-- Enquiry Summary Breakdown -->
+        <div class="bg-white p-4 rounded-4 border border-subtle shadow-sm mb-4">
+          <h5 class="fw-bold font-heading text-charcoal mb-3 pb-2 border-bottom border-subtle">
+            Enquiry Submission Details
+          </h5>
+
+          <div class="row g-3 small">
+            <div class="col-sm-6">
+              <span class="text-muted d-block">Client Name:</span>
+              <strong class="text-charcoal">{{ enquiry.full_name }}</strong>
+            </div>
+            <div class="col-sm-6">
+              <span class="text-muted d-block">Business Name:</span>
+              <strong class="text-charcoal">{{ enquiry.business_name }}</strong>
+            </div>
+            <div class="col-sm-6">
+              <span class="text-muted d-block">WhatsApp Number:</span>
+              <strong class="text-charcoal">{{ enquiry.whatsapp_number }}</strong>
+            </div>
+            <div class="col-sm-6">
+              <span class="text-muted d-block">Email:</span>
+              <strong class="text-charcoal">{{ enquiry.email or 'Not provided' }}</strong>
+            </div>
+
+            <div class="col-sm-6">
+              <span class="text-muted d-block">Selected Showcase Concept:</span>
+              <strong class="text-charcoal">
+                {{ enquiry.website.title if enquiry.website else 'General / Custom Consultation' }}
+              </strong>
+            </div>
+            <div class="col-sm-6">
+              <span class="text-muted d-block">Selected Package:</span>
+              <strong class="text-charcoal">
+                {{ enquiry.package.name if enquiry.package else 'Not specified' }}
+                {% if enquiry.package and enquiry.package.price %}(₦{{ "{:,.0f}".format(enquiry.package.price) }}){% endif %}
+              </strong>
+            </div>
+
+            {% if enquiry.addons %}
+            <div class="col-12">
+              <span class="text-muted d-block mb-1">Selected Add-ons:</span>
+              <ul class="list-unstyled mb-0 d-flex flex-wrap gap-2">
+                {% for ea in enquiry.addons %}
+                <li class="badge bg-light text-dark border p-2">
+                  <i class="bi bi-plus-circle text-warning me-1"></i> {{ ea.add_on.name }}
+                  {% if ea.price_at_enquiry %}(₦{{ "{:,.0f}".format(ea.price_at_enquiry) }}){% endif %}
+                </li>
+                {% endfor %}
+              </ul>
+            </div>
+            {% endif %}
+
+            {% if enquiry.calculated_estimate %}
+            <div class="col-12 pt-2 border-top">
+              <span class="text-muted d-block">Automated Project Estimate:</span>
+              <span class="fs-4 fw-extrabold text-warning">₦{{ "{:,.0f}".format(enquiry.calculated_estimate) }}</span>
+              <small class="text-muted d-block">(Subject to final confirmation)</small>
+            </div>
+            {% endif %}
+
+            {% if enquiry.additional_requirements %}
+            <div class="col-12 pt-2 border-top">
+              <span class="text-muted d-block mb-1">Additional Requirements:</span>
+              <p class="mb-0 bg-light p-3 rounded-3 text-muted">{{ enquiry.additional_requirements }}</p>
+            </div>
+            {% endif %}
+          </div>
+        </div>
+
+        <!-- Next Steps -->
+        <div class="bg-warm-surface p-4 rounded-4 border border-subtle">
+          <h6 class="fw-bold font-heading text-charcoal mb-2">What Happens Next?</h6>
+          <ol class="small text-muted mb-0 ps-3 d-flex flex-column gap-2">
+            <li>Our technical lead reviews your requirements and selected concept.</li>
+            <li>We contact you via WhatsApp within 2 hours to confirm specific features, branding assets, and payment gateway preferences.</li>
+            <li>We deliver a formal milestone contract and initiate your website build.</li>
+          </ol>
+        </div>
+
+        <div class="text-center mt-4">
+          <a href="{{ url_for('public.catalogue') }}" class="btn btn-outline-dark">
+            <i class="bi bi-arrow-left"></i> Return to Showroom Catalogue
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

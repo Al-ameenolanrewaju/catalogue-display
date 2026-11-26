@@ -1,0 +1,212 @@
+{% extends "base.html" %}
+
+{% block title %}Request Website & Customisation Quote | {{ brand_name }}{% endblock %}
+
+{% block content %}
+<section class="py-5 bg-warm-surface border-bottom border-subtle">
+  <div class="container py-3">
+    <div class="max-w-700 mx-auto text-center">
+      <span class="badge bg-white text-charcoal border small mb-2">CLIENT ACQUISITION INTAKE</span>
+      <h1 class="display-5 fw-bold font-heading text-charcoal mb-2">Request Your Website Quotation</h1>
+      <p class="text-muted mb-0">
+        Tell us about your business and website goals. Receive an exact scope breakdown, timeline, and WhatsApp follow-up today.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- Client Enquiry Form -->
+<section class="py-5 bg-warm-main">
+  <div class="container py-3">
+    <div class="row g-5 justify-content-center">
+      <div class="col-lg-8">
+        <div class="bg-white p-4 p-md-5 rounded-4 border border-subtle shadow-sm">
+          <form method="POST" action="{{ url_for('public.enquire') }}" id="enquiryForm">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+            <!-- Step 1: Client & Business Information -->
+            <div class="mb-5">
+              <h5 class="fw-bold font-heading text-charcoal mb-3 d-flex align-items-center gap-2">
+                <span class="badge bg-dark rounded-circle" style="width: 26px; height: 26px; line-height: 18px;">1</span>
+                <span>Business & Contact Information</span>
+              </h5>
+
+              <div class="row g-3">
+                <div class="col-md-6">
+                  <label class="form-label small fw-bold text-charcoal">Your Full Name <span class="text-danger">*</span></label>
+                  <input type="text" name="full_name" class="form-control" placeholder="e.g., Emeka Adeleke" required>
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label small fw-bold text-charcoal">Business / Brand Name <span class="text-danger">*</span></label>
+                  <input type="text" name="business_name" class="form-control" placeholder="e.g., Apex Luxury Apparel" required>
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label small fw-bold text-charcoal">WhatsApp Number <span class="text-danger">*</span></label>
+                  <input type="tel" name="whatsapp_number" class="form-control" placeholder="e.g., 08012345678 or +234..." required>
+                  <small class="text-muted" style="font-size: 0.75rem;">We will send your proposal and quotation via WhatsApp.</small>
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label small fw-bold text-charcoal">Email Address <span class="text-muted fw-normal">(Optional)</span></label>
+                  <input type="email" name="email" class="form-control" placeholder="e.g., hello@yourbusiness.ng">
+                </div>
+              </div>
+            </div>
+
+            <!-- Step 2: Website Selection & Package -->
+            <div class="mb-5">
+              <h5 class="fw-bold font-heading text-charcoal mb-3 d-flex align-items-center gap-2">
+                <span class="badge bg-dark rounded-circle" style="width: 26px; height: 26px; line-height: 18px;">2</span>
+                <span>Select Concept & Package</span>
+              </h5>
+
+              <div class="row g-3">
+                <div class="col-md-6">
+                  <label class="form-label small fw-bold text-charcoal">Interested Website Design from Showroom:</label>
+                  <select name="website_id" class="form-select">
+                    <option value="">-- General / Custom Website (No specific showcase) --</option>
+                    {% for web in all_websites %}
+                    <option value="{{ web.id }}" {% if preselected_website and preselected_website.id == web.id %}selected{% endif %}>
+                      {{ web.title }} ({{ web.category.name if web.category else 'Business' }})
+                    </option>
+                    {% endfor %}
+                  </select>
+                </div>
+
+                <div class="col-md-6">
+                  <label class="form-label small fw-bold text-charcoal">Select Preferred Package:</label>
+                  <select name="package_id" id="enquiryPackageSelect" class="form-select">
+                    <option value="" data-price="0">-- Not Sure / Custom Quotation --</option>
+                    {% for pkg in all_packages %}
+                    <option value="{{ pkg.id }}" data-price="{{ pkg.price or 'null' }}" {% if (preselected_package and preselected_package.id == pkg.id) or (not preselected_package and pkg.is_recommended) %}selected{% endif %}>
+                      {{ pkg.name }} ({{ pkg.formatted_price }})
+                    </option>
+                    {% endfor %}
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            <!-- Step 3: Customisations & Add-ons -->
+            <div class="mb-5">
+              <div class="d-flex justify-content-between align-items-center mb-2">
+                <h5 class="fw-bold font-heading text-charcoal mb-0 d-flex align-items-center gap-2">
+                  <span class="badge bg-dark rounded-circle" style="width: 26px; height: 26px; line-height: 18px;">3</span>
+                  <span>Choose Required Add-ons (Optional)</span>
+                </h5>
+                <span class="small text-muted">Select all that apply</span>
+              </div>
+              <p class="text-muted small mb-3">Add any additional functional modules you require for your store or platform:</p>
+
+              <div class="row g-3">
+                {% for addon in all_addons %}
+                <div class="col-md-6">
+                  <div class="addon-selection-card h-100">
+                    <div class="d-flex align-items-start justify-content-between mb-1">
+                      <div class="fw-semibold small text-charcoal">{{ addon.name }}</div>
+                      <input type="checkbox" name="addon_ids" value="{{ addon.id }}" class="form-check-input addon-checkbox" data-price="{{ addon.price or 0 }}">
+                    </div>
+                    <small class="text-muted d-block mb-2" style="font-size: 0.78rem;">{{ addon.description }}</small>
+                    <div class="small fw-bold text-dark">{{ addon.formatted_price }}</div>
+                  </div>
+                </div>
+                {% endfor %}
+              </div>
+            </div>
+
+            <!-- Step 4: Additional Requirements & Budget -->
+            <div class="mb-5">
+              <h5 class="fw-bold font-heading text-charcoal mb-3 d-flex align-items-center gap-2">
+                <span class="badge bg-dark rounded-circle" style="width: 26px; height: 26px; line-height: 18px;">4</span>
+                <span>Project Brief & Budget Range</span>
+              </h5>
+
+              <div class="mb-3">
+                <label class="form-label small fw-bold text-charcoal">Describe any additional requirements or questions:</label>
+                <textarea name="additional_requirements" rows="4" class="form-control" placeholder="Tell us about special integrations, reference links, target launch date, or specific pages you need..."></textarea>
+              </div>
+
+              <div class="row g-3">
+                <div class="col-md-6">
+                  <label class="form-label small fw-bold text-charcoal">Estimated Budget Range <span class="text-muted fw-normal">(Optional)</span></label>
+                  <select name="estimated_budget" class="form-select">
+                    <option value="">-- Select Budget Range --</option>
+                    <option value="₦100,000 - ₦200,000">₦100,000 - ₦200,000</option>
+                    <option value="₦200,000 - ₦400,000">₦200,000 - ₦400,000</option>
+                    <option value="₦400,000 - ₦800,000">₦400,000 - ₦800,000</option>
+                    <option value="₦800,000 - ₦1,500,000+">₦800,000 - ₦1,500,000+</option>
+                    <option value="Custom Enterprise">Custom Enterprise</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            <!-- Estimate Calculator Banner -->
+            <div class="bg-warm-surface p-4 rounded-4 border border-subtle mb-4">
+              <div class="d-flex flex-column flex-sm-row justify-content-between align-items-sm-center gap-2 mb-2">
+                <div>
+                  <span class="small text-muted fw-bold text-uppercase">Automated Project Estimate</span>
+                  <div class="font-heading fw-extrabold fs-3 text-charcoal" id="liveEstimatedTotal">₦0</div>
+                </div>
+                <div class="text-sm-end text-muted small">
+                  <div>Base Package: <span id="livePackageCost" class="fw-semibold text-dark">₦0</span></div>
+                  <div>Add-ons: <span id="liveAddonsCost" class="fw-semibold text-dark">₦0</span></div>
+                </div>
+              </div>
+              <p class="small text-muted mb-0" style="font-size: 0.78rem;">
+                * This automated estimate is for planning purposes. We will confirm the exact scope, milestones, and deliverable timeline upon reviewing your brief.
+              </p>
+            </div>
+
+            <!-- Submit Button -->
+            <button type="submit" class="btn btn-gold btn-lg w-100 py-3 shadow d-flex align-items-center justify-content-center gap-2">
+              <span>Submit Project Enquiry & Generate WhatsApp Brief</span>
+              <i class="bi bi-arrow-right"></i>
+            </button>
+          </form>
+        </div>
+      </div>
+
+      <!-- Right Column: Quick Contact & WhatsApp Support -->
+      <div class="col-lg-4">
+        <div class="bg-white p-4 rounded-4 border border-subtle shadow-sm mb-4">
+          <div class="d-flex align-items-center gap-2 mb-3">
+            <div class="bg-success text-white rounded-circle p-2 d-flex align-items-center justify-content-center" style="width: 36px; height: 36px;">
+              <i class="bi bi-whatsapp fs-5"></i>
+            </div>
+            <h5 class="fw-bold font-heading text-charcoal mb-0">Direct WhatsApp Inquiry</h5>
+          </div>
+          <p class="text-muted small mb-3">
+            Prefer a direct conversation? You can chat directly with our lead website strategist right now on WhatsApp.
+          </p>
+          <a href="https://wa.me/{{ whatsapp_number }}?text=Hello%20{{ brand_name }},%20I%20am%20interested%20in%20a%20website%20consultation." target="_blank" class="btn btn-outline-success w-100 d-flex align-items-center justify-content-center gap-2">
+            <i class="bi bi-whatsapp"></i>
+            <span>Chat on WhatsApp: {{ contact_phone }}</span>
+          </a>
+        </div>
+
+        <div class="bg-warm-surface p-4 rounded-4 border border-subtle">
+          <h6 class="fw-bold font-heading text-charcoal mb-3">Our Client Commitment</h6>
+          <ul class="list-unstyled small text-muted d-flex flex-column gap-2 mb-0">
+            <li class="d-flex align-items-start gap-2">
+              <i class="bi bi-check-circle text-success mt-1"></i>
+              <span>Guaranteed response within 2 hours during business hours.</span>
+            </li>
+            <li class="d-flex align-items-start gap-2">
+              <i class="bi bi-check-circle text-success mt-1"></i>
+              <span>Detailed proposal with milestones and delivery dates.</span>
+            </li>
+            <li class="d-flex align-items-start gap-2">
+              <i class="bi bi-check-circle text-success mt-1"></i>
+              <span>Full ownership of code, assets, and administrative access.</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}
+
+{% block extra_scripts %}
+<script src="{{ url_for('static', filename='js/enquiry.js') }}"></script>
+{% endblock %}

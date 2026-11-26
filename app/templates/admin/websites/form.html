@@ -1,0 +1,125 @@
+{% extends "admin/base_admin.html" %}
+
+{% block page_title %}{{ title }}{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <div>
+    <h4 class="fw-bold font-heading text-charcoal mb-1">{{ title }}</h4>
+    <p class="text-muted small mb-0">Configure project details, categories, live demonstration links, and preview screenshots.</p>
+  </div>
+  <a href="{{ url_for('admin.websites_list') }}" class="btn btn-outline-secondary btn-sm">
+    <i class="bi bi-arrow-left"></i> Back to Websites
+  </a>
+</div>
+
+<div class="row g-4">
+  <div class="col-lg-8">
+    <div class="bg-white p-4 p-md-5 rounded-4 border border-subtle shadow-sm">
+      <form method="POST" enctype="multipart/form-data">
+        {{ form.hidden_tag() }}
+
+        <div class="row g-3 mb-4">
+          <div class="col-md-8">
+            <label class="form-label small fw-bold text-charcoal">{{ form.title.label.text }} <span class="text-danger">*</span></label>
+            {{ form.title(class="form-control", placeholder="e.g., LuxeChic Fashion Boutique") }}
+            {% for error in form.title.errors %}<div class="text-danger small">{{ error }}</div>{% endfor %}
+          </div>
+          <div class="col-md-4">
+            <label class="form-label small fw-bold text-charcoal">{{ form.category_id.label.text }}</label>
+            {{ form.category_id(class="form-select") }}
+          </div>
+
+          <div class="col-12">
+            <label class="form-label small fw-bold text-charcoal">{{ form.intended_business_type.label.text }} <span class="text-danger">*</span></label>
+            {{ form.intended_business_type(class="form-control", placeholder="e.g., Luxury Boutique, High-end Clothing Label") }}
+            <small class="text-muted">{{ form.intended_business_type.description }}</small>
+          </div>
+
+          <div class="col-12">
+            <label class="form-label small fw-bold text-charcoal">{{ form.short_description.label.text }} <span class="text-danger">*</span></label>
+            {{ form.short_description(class="form-control", placeholder="Concise summary for cards & previews...") }}
+          </div>
+
+          <div class="col-12">
+            <label class="form-label small fw-bold text-charcoal">{{ form.full_description.label.text }} <span class="text-danger">*</span></label>
+            {{ form.full_description(class="form-control", rows="5", placeholder="Detailed explanation of the website concept, value proposition, and customer journey...") }}
+          </div>
+
+          <div class="col-12">
+            <label class="form-label small fw-bold text-charcoal">{{ form.live_demo_url.label.text }}</label>
+            {{ form.live_demo_url(class="form-control", placeholder="https://demo-website.com") }}
+            <small class="text-muted">Working link that will be loaded in the interactive live preview frame.</small>
+          </div>
+
+          <div class="col-12">
+            <label class="form-label small fw-bold text-charcoal">{{ form.features.label.text }}</label>
+            {{ form.features(class="form-control font-monospace small", rows="5") }}
+            <small class="text-muted">{{ form.features.description }}</small>
+          </div>
+        </div>
+
+        <h5 class="fw-bold font-heading text-charcoal mb-3 pt-3 border-top border-subtle">Screenshots & Media</h5>
+
+        <div class="row g-3 mb-4">
+          <div class="col-md-6">
+            <label class="form-label small fw-bold text-charcoal">{{ form.primary_image_file.label.text }}</label>
+            {{ form.primary_image_file(class="form-control") }}
+            <small class="text-muted">Upload file (PNG, JPG, WEBP). Stored persistently.</small>
+          </div>
+          <div class="col-md-6">
+            <label class="form-label small fw-bold text-charcoal">{{ form.primary_image_url.label.text }}</label>
+            {{ form.primary_image_url(class="form-control", placeholder="https://images.unsplash.com/...") }}
+            <small class="text-muted">{{ form.primary_image_url.description }}</small>
+          </div>
+
+          <div class="col-12">
+            <label class="form-label small fw-bold text-charcoal">{{ form.gallery_image_urls.label.text }}</label>
+            {{ form.gallery_image_urls(class="form-control font-monospace small", rows="3", placeholder="https://image1.jpg\nhttps://image2.jpg") }}
+          </div>
+        </div>
+
+        <h5 class="fw-bold font-heading text-charcoal mb-3 pt-3 border-top border-subtle">Visibility & Promotion</h5>
+
+        <div class="d-flex gap-4 mb-4">
+          <div class="form-check form-switch">
+            {{ form.is_published(class="form-check-input") }}
+            <label class="form-check-label small fw-bold text-charcoal" for="{{ form.is_published.id }}">
+              {{ form.is_published.label.text }}
+            </label>
+          </div>
+          <div class="form-check form-switch">
+            {{ form.is_featured(class="form-check-input") }}
+            <label class="form-check-label small fw-bold text-charcoal" for="{{ form.is_featured.id }}">
+              {{ form.is_featured.label.text }}
+            </label>
+          </div>
+        </div>
+
+        <button type="submit" class="btn btn-gold btn-lg w-100 shadow-sm">
+          {{ form.submit.label.text }}
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <div class="col-lg-4">
+    {% if project and project.primary_image_url %}
+    <div class="bg-white p-4 rounded-4 border border-subtle shadow-sm mb-4">
+      <h6 class="fw-bold font-heading text-charcoal mb-3">Current Primary Screenshot</h6>
+      <img src="{{ project.primary_image_url }}" alt="{{ project.title }}" class="img-fluid rounded-3 border mb-2">
+      <div class="small text-muted text-break">{{ project.primary_image_url }}</div>
+    </div>
+    {% endif %}
+
+    <div class="bg-warm-surface p-4 rounded-4 border border-subtle">
+      <h6 class="fw-bold font-heading text-charcoal mb-2">Showroom Best Practices</h6>
+      <ul class="small text-muted ps-3 mb-0 d-flex flex-column gap-2">
+        <li>Always specify the exact business niche so prospective clients instantly recognize suitability.</li>
+        <li>Include 4 to 6 specific feature bullet points (e.g. WhatsApp checkout, Paystack integration).</li>
+        <li>High-resolution screenshot ratios (16:10 or 16:9) display best across mobile and desktop.</li>
+      </ul>
+    </div>
+  </div>
+</div>
+{% endblock %}
