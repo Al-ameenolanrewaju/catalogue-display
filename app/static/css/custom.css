@@ -511,26 +511,51 @@ nav[aria-label="breadcrumb"],
   box-shadow: 0 0 0 3px rgba(184, 134, 11, 0.15);
 }
 
-/* Footer */
+/* Footer - High Contrast & Crisp Legibility */
 .footer-custom {
-  background-color: #161413;
-  color: #D6D3D1;
+  background-color: #161413 !important;
+  color: #E7E5E4 !important;
   padding-top: 4.5rem;
   padding-bottom: 2.5rem;
   border-top: 1px solid #292524;
 }
 .footer-heading {
-  color: #FAF8F5;
+  color: #FFFFFF !important;
   font-family: var(--font-heading);
-  font-weight: 600;
+  font-weight: 700;
+  font-size: 1.05rem;
+  letter-spacing: 0.02em;
   margin-bottom: 1.25rem;
 }
+.footer-desc,
+.footer-custom p {
+  color: #E7E5E4 !important;
+  line-height: 1.7;
+  font-size: 0.92rem;
+}
 .footer-link {
-  color: #D6D3D1;
+  color: #D6D3D1 !important;
   text-decoration: none;
-  transition: color 0.2s ease;
+  font-size: 0.90rem;
+  transition: all 0.2s ease;
 }
 .footer-link:hover {
-  color: #FFFFFF;
+  color: #FBBF24 !important;
+}
+.footer-contact-list li,
+.footer-contact-list span {
+  color: #E7E5E4 !important;
+  font-size: 0.92rem;
+}
+.footer-bottom-bar,
+.footer-bottom-bar div,
+.footer-bottom-bar span {
+  color: #D6D3D1 !important;
+  font-size: 0.88rem;
+}
+/* Absolute safety override for any muted text in footer */
+.footer-custom .text-muted,
+.footer-custom .text-secondary {
+  color: #D6D3D1 !important;
 }
 
