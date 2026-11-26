@@ -43,7 +43,7 @@
                 <div class="col-md-6">
                   <label class="form-label small fw-bold text-charcoal">WhatsApp Number <span class="text-danger">*</span></label>
                   <input type="tel" name="whatsapp_number" class="form-control" placeholder="e.g., 08012345678 or +234..." required>
-                  <small class="text-muted" style="font-size: 0.75rem;">We will send your proposal and quotation via WhatsApp.</small>
+                  <small class="text-secondary fw-medium" style="font-size: 0.84rem;">We will send your proposal and quotation via WhatsApp.</small>
                 </div>
                 <div class="col-md-6">
                   <label class="form-label small fw-bold text-charcoal">Email Address <span class="text-muted fw-normal">(Optional)</span></label>
@@ -105,7 +105,7 @@
                       <div class="fw-semibold small text-charcoal">{{ addon.name }}</div>
                       <input type="checkbox" name="addon_ids" value="{{ addon.id }}" class="form-check-input addon-checkbox" data-price="{{ addon.price or 0 }}">
                     </div>
-                    <small class="text-muted d-block mb-2" style="font-size: 0.78rem;">{{ addon.description }}</small>
+                    <small class="text-secondary d-block mb-2 fw-medium" style="font-size: 0.84rem; line-height: 1.5;">{{ addon.description }}</small>
                     <div class="small fw-bold text-dark">{{ addon.formatted_price }}</div>
                   </div>
                 </div>
@@ -152,7 +152,7 @@
                   <div>Add-ons: <span id="liveAddonsCost" class="fw-semibold text-dark">₦0</span></div>
                 </div>
               </div>
-              <p class="small text-muted mb-0" style="font-size: 0.78rem;">
+              <p class="small text-secondary mb-0 fw-medium" style="font-size: 0.84rem; line-height: 1.5;">
                 * This automated estimate is for planning purposes. We will confirm the exact scope, milestones, and deliverable timeline upon reviewing your brief.
               </p>
             </div>
