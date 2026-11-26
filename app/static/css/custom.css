@@ -141,13 +141,11 @@ h1, h2, h3, h4, h5, h6, .font-heading {
   }
 }
 
-/* Hide breadcrumbs on mobile screens (< 768px) */
-@media (max-width: 767.98px) {
-  .breadcrumb, 
-  nav[aria-label="breadcrumb"],
-  .breadcrumb-item {
-    display: none !important;
-  }
+/* Totally disable breadcrumbs */
+.breadcrumb, 
+nav[aria-label="breadcrumb"],
+.breadcrumb-item {
+  display: none !important;
 }
 
 /* Cards & Showcases */

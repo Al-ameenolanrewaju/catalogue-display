@@ -4,20 +4,9 @@
 {% block meta_description %}{{ project.short_description }}{% endblock %}
 
 {% block content %}
-<!-- Breadcrumbs & Header -->
-<section class="py-3 py-md-4 bg-warm-surface border-bottom border-subtle">
+<!-- Showcase Header -->
+<section class="py-4 bg-warm-surface border-bottom border-subtle">
   <div class="container">
-    <nav aria-label="breadcrumb" class="d-none d-md-block">
-      <ol class="breadcrumb mb-2 small">
-        <li class="breadcrumb-item"><a href="{{ url_for('public.index') }}" class="text-muted text-decoration-none">Home</a></li>
-        <li class="breadcrumb-item"><a href="{{ url_for('public.catalogue') }}" class="text-muted text-decoration-none">Showroom</a></li>
-        {% if project.category %}
-        <li class="breadcrumb-item"><a href="{{ url_for('public.catalogue', category=project.category.slug) }}" class="text-muted text-decoration-none">{{ project.category.name }}</a></li>
-        {% endif %}
-        <li class="breadcrumb-item active text-charcoal" aria-current="page">{{ project.title }}</li>
-      </ol>
-    </nav>
-
     <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3">
       <div>
         <div class="d-flex align-items-center gap-2 mb-2">
