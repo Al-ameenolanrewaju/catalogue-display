@@ -18,15 +18,15 @@
   <div class="container py-3">
     <div class="row g-4 align-items-stretch justify-content-center">
       {% for pkg in packages %}
-      <div class="col-lg-3 col-md-6" id="{{ pkg.slug }}">
-        <div class="package-card {% if pkg.is_recommended %}recommended{% endif %}">
-          <h5 class="fw-bold font-heading text-charcoal mb-1">{{ pkg.name }}</h5>
-          <p class="text-muted small mb-3">{{ pkg.description }}</p>
+      <div class="col-xl-3 col-md-6 d-flex" id="{{ pkg.slug }}">
+        <div class="package-card w-100 {% if pkg.is_recommended %}recommended{% endif %}">
+          <h5 class="fw-bold font-heading text-charcoal mb-2" style="font-size: 1.15rem; min-height: 2.8rem; display: flex; align-items: center;">{{ pkg.name }}</h5>
+          <p class="text-secondary small mb-3" style="font-size: 0.88rem; line-height: 1.5; min-height: 3.8rem;">{{ pkg.description }}</p>
 
-          <div class="mb-4 pb-3 border-bottom border-subtle">
-            <span class="font-heading fw-extrabold fs-3 text-charcoal">{{ pkg.formatted_price }}</span>
+          <div class="d-flex align-items-baseline gap-2 mb-4 pb-3 border-bottom border-subtle">
+            <span class="font-heading fw-extrabold fs-3 text-charcoal lh-1">{{ pkg.formatted_price }}</span>
             {% if pkg.price %}
-            <span class="text-muted small">/ one-time</span>
+            <span class="text-secondary small fw-medium text-nowrap">/ one-time</span>
             {% endif %}
           </div>
 
@@ -45,7 +45,7 @@
             {% endfor %}
           </ul>
 
-          <a href="{{ url_for('public.enquire', package=pkg.slug) }}" class="btn {% if pkg.is_recommended %}btn-gold{% else %}btn-outline-dark{% endif %} w-100 mt-auto">
+          <a href="{{ url_for('public.enquire', package=pkg.slug) }}" class="btn {% if pkg.is_recommended %}btn-gold{% else %}btn-outline-dark{% endif %} w-100 mt-auto py-2">
             Choose {{ pkg.name }}
           </a>
         </div>

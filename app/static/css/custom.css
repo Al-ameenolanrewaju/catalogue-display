@@ -394,37 +394,42 @@ nav[aria-label="breadcrumb"],
   border: 10px solid #2B2927;
 }
 
-/* Packages Comparison */
+/* Packages Comparison - Premium Light Aesthetic */
 .package-card {
   background: #FFFFFF;
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-lg);
-  padding: 2.2rem 1.8rem;
+  padding: 2.4rem 1.6rem 2rem;
   height: 100%;
   display: flex;
   flex-direction: column;
   transition: all 0.3s ease;
   position: relative;
+  box-shadow: var(--shadow-card);
 }
 .package-card.recommended {
   border: 2px solid var(--accent-gold);
-  box-shadow: 0 12px 35px -6px rgba(184, 134, 11, 0.15);
+  box-shadow: 0 12px 35px -6px rgba(184, 134, 11, 0.16);
   transform: translateY(-4px);
+  padding-top: 2.6rem;
 }
 .package-card.recommended::before {
-  content: 'MOST POPULAR CHOICE';
+  content: 'MOST POPULAR';
   position: absolute;
-  top: -14px;
+  top: -13px;
   left: 50%;
   transform: translateX(-50%);
   background-color: var(--accent-gold);
   color: #FFFFFF;
-  font-size: 0.78rem;
+  font-size: 0.72rem;
   font-weight: 700;
   letter-spacing: 0.08em;
-  padding: 0.35rem 0.95rem;
+  padding: 0.3rem 0.95rem;
   border-radius: 9999px;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  box-shadow: 0 4px 12px rgba(184, 134, 11, 0.25);
+  white-space: nowrap !important;
+  line-height: 1.2;
+  z-index: 5;
 }
 
 /* Interactive Add-on Selection Box */
