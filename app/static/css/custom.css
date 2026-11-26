@@ -1,6 +1,6 @@
 /* ==========================================================================
    Website Sales Catalogue - Premium Warm Aesthetic Stylesheet
-   Designed for High-Converting Digital Showroom Experience
+   ApexCraft Studios - Digital Showroom & Client Acquisition Platform
    ========================================================================== */
 
 :root {
@@ -21,7 +21,7 @@
   --badge-text: #6B4E16;
   --shadow-subtle: 0 4px 20px -2px rgba(28, 25, 23, 0.05);
   --shadow-hover: 0 16px 36px -4px rgba(28, 25, 23, 0.10);
-  --shadow-card: 0 1px 3px rgba(0, 0, 0, 0.05), 0 10px 24px -8px rgba(0, 0, 0, 0.04);
+  --shadow-card: 0 1px 3px rgba(0, 0, 0, 0.04), 0 8px 24px -6px rgba(28, 25, 23, 0.06);
   --radius-sm: 8px;
   --radius-md: 14px;
   --radius-lg: 20px;
@@ -30,7 +30,7 @@
   --font-body: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
 }
 
-/* Reset & Typography */
+/* Reset & Base Typography */
 body {
   font-family: var(--font-body);
   background-color: var(--bg-main);
@@ -47,13 +47,32 @@ h1, h2, h3, h4, h5, h6, .font-heading {
   letter-spacing: -0.025em;
 }
 
-/* Layout Utilities */
+/* Layout Utilities & Spacing Rhythm */
 .bg-warm-main { background-color: var(--bg-main); }
 .bg-warm-surface { background-color: var(--bg-surface-warm); }
 .bg-warm-soft { background-color: var(--accent-warm-soft); }
 .text-charcoal { color: var(--text-main); }
 .text-muted-charcoal { color: var(--text-muted); }
 .border-subtle { border-color: var(--border-subtle) !important; }
+
+.section-py {
+  padding-top: 5rem;
+  padding-bottom: 5rem;
+}
+@media (max-width: 767.98px) {
+  .section-py {
+    padding-top: 3.5rem;
+    padding-bottom: 3.5rem;
+  }
+}
+
+.max-w-700 { max-width: 700px; }
+.line-clamp-2 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
 
 /* Custom Buttons */
 .btn-gold {
@@ -103,7 +122,7 @@ h1, h2, h3, h4, h5, h6, .font-heading {
   transform: translateY(-1px);
 }
 
-/* Navbar */
+/* Header & Navbar Styling */
 .navbar-custom {
   background-color: rgba(250, 248, 245, 0.96) !important;
   backdrop-filter: blur(12px);
@@ -118,7 +137,7 @@ h1, h2, h3, h4, h5, h6, .font-heading {
 .nav-link {
   font-weight: 500;
   color: var(--text-main) !important;
-  padding: 0.5rem 0.9rem !important;
+  padding: 0.5rem 0.85rem !important;
   border-radius: var(--radius-sm);
   transition: all 0.2s ease;
   white-space: nowrap;
@@ -136,7 +155,7 @@ h1, h2, h3, h4, h5, h6, .font-heading {
 
 @media (min-width: 992px) and (max-width: 1199.98px) {
   .nav-link {
-    padding: 0.45rem 0.6rem !important;
+    padding: 0.45rem 0.55rem !important;
     font-size: 0.88rem;
   }
 }
@@ -148,7 +167,44 @@ nav[aria-label="breadcrumb"],
   display: none !important;
 }
 
-/* Cards & Showcases */
+/* Hero Section Refinements */
+.hero-mockup-wrapper {
+  position: relative;
+  transition: transform 0.4s ease;
+}
+.hero-mockup-wrapper:hover {
+  transform: translateY(-4px);
+}
+.hero-browser-card {
+  box-shadow: 0 20px 45px -10px rgba(28, 25, 23, 0.12), 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+.hero-floating-badge {
+  position: absolute;
+  bottom: 14px;
+  right: 14px;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 0.5rem 0.85rem;
+  z-index: 3;
+}
+.pulse-indicator {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: #10B981;
+  box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7);
+  animation: pulse-green 2s infinite;
+}
+@keyframes pulse-green {
+  0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }
+  70% { transform: scale(1); box-shadow: 0 0 0 6px rgba(16, 185, 129, 0); }
+  100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+}
+
+/* Showcase Cards Refinement */
 .showcase-card {
   background: var(--bg-card);
   border: 1px solid var(--border-subtle);
@@ -185,26 +241,59 @@ nav[aria-label="breadcrumb"],
 
 .showcase-badges {
   position: absolute;
-  top: 14px;
-  left: 14px;
+  top: 12px;
+  left: 12px;
+  right: 12px;
   display: flex;
-  gap: 8px;
+  justify-content: space-between;
+  align-items: center;
   z-index: 2;
+  pointer-events: none;
+}
+.showcase-badges-group {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
 }
 
 .custom-badge {
   background: rgba(255, 255, 255, 0.94);
   backdrop-filter: blur(6px);
   color: var(--text-main);
-  font-size: 0.75rem;
+  font-size: 0.72rem;
   font-weight: 600;
-  padding: 0.35rem 0.75rem;
+  padding: 0.3rem 0.65rem;
   border-radius: 9999px;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+  border: 1px solid rgba(0, 0, 0, 0.04);
 }
 .custom-badge-featured {
   background-color: var(--accent-gold);
   color: #FFFFFF;
+  border-color: var(--accent-gold-dark);
+}
+.custom-badge-status {
+  background-color: rgba(250, 248, 245, 0.95);
+  color: #44403C;
+  border: 1px solid var(--border-subtle);
+}
+
+/* Feature Chips inside Cards */
+.showcase-features-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.showcase-feature-chip {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 0.82rem;
+  color: var(--text-muted);
+}
+.showcase-feature-chip i {
+  font-size: 0.95rem;
+  line-height: 1;
 }
 
 /* Category Filter Chips */
@@ -411,3 +500,4 @@ nav[aria-label="breadcrumb"],
 .footer-link:hover {
   color: #FAF8F5;
 }
+

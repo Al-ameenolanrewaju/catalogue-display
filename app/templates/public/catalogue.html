@@ -73,43 +73,53 @@
         <div class="showcase-card">
           <div class="showcase-img-wrap">
             <div class="showcase-badges">
-              {% if project.is_featured %}
-              <span class="custom-badge custom-badge-featured"><i class="bi bi-star-fill me-1"></i> Featured</span>
-              {% endif %}
-              <span class="custom-badge">{{ project.category.name if project.category else 'Business' }}</span>
+              <div class="showcase-badges-group">
+                {% if project.is_featured %}
+                <span class="custom-badge custom-badge-featured"><i class="bi bi-star-fill me-1"></i> Featured</span>
+                {% endif %}
+                <span class="custom-badge">{{ project.category.name if project.category else 'Business' }}</span>
+              </div>
+              <span class="custom-badge custom-badge-status">
+                <i class="bi bi-patch-check text-warning me-1"></i> Available
+              </span>
             </div>
             <img src="{{ project.primary_image_url }}" alt="{{ project.title }}" loading="lazy">
           </div>
 
           <div class="p-4 d-flex flex-column flex-grow-1">
             <div class="small text-muted fw-semibold mb-1 text-uppercase" style="font-size: 0.72rem; letter-spacing: 0.05em;">
-              Target: {{ project.intended_business_type }}
+              <i class="bi bi-building me-1"></i> Target: {{ project.intended_business_type }}
             </div>
             <h5 class="fw-bold text-charcoal mb-2 font-heading">{{ project.title }}</h5>
-            <p class="text-muted small mb-3 flex-grow-1 line-clamp-2">
+            <p class="text-muted small mb-3 line-clamp-2" style="min-height: 2.6rem;">
               {{ project.short_description }}
             </p>
 
             <!-- Feature tags -->
-            <div class="d-flex flex-wrap gap-1 mb-4">
+            <div class="showcase-features-list mb-3">
               {% for feat in project.features[:3] %}
-              <span class="badge bg-light text-dark border font-normal" style="font-size: 0.72rem;">{{ feat.feature_text }}</span>
+              <div class="showcase-feature-chip">
+                <i class="bi bi-check2 text-success"></i>
+                <span class="text-truncate">{{ feat.feature_text }}</span>
+              </div>
               {% endfor %}
             </div>
 
-            <!-- Actions -->
-            <div class="d-flex align-items-center justify-content-between pt-3 border-top border-subtle gap-2">
-              {% if project.live_demo_url %}
-              <a href="{{ url_for('public.live_preview', slug=project.slug) }}" class="btn btn-sm btn-outline-secondary d-inline-flex align-items-center gap-1 border-subtle" title="Test Live Interactive Demo">
-                <i class="bi bi-play-circle"></i> Live Demo
-              </a>
-              {% endif %}
-              <a href="{{ url_for('public.showcase_detail', slug=project.slug) }}" class="btn btn-sm btn-outline-dark">
-                View Details
-              </a>
-              <a href="{{ url_for('public.enquire', website=project.slug) }}" class="btn btn-sm btn-gold d-inline-flex align-items-center gap-1" title="Get a Website Like This">
-                <span>Get This</span>
-                <i class="bi bi-chevron-right"></i>
+            <!-- Two-Tiered Actions: Details/Demo + Get This Design -->
+            <div class="mt-auto pt-3 border-top border-subtle">
+              <div class="d-flex align-items-center gap-2 mb-2">
+                <a href="{{ url_for('public.showcase_detail', slug=project.slug) }}" class="btn btn-sm btn-outline-dark flex-grow-1">
+                  <i class="bi bi-info-circle me-1"></i> Details
+                </a>
+                {% if project.live_demo_url %}
+                <a href="{{ url_for('public.live_preview', slug=project.slug) }}" class="btn btn-sm btn-outline-secondary flex-grow-1 border-subtle text-charcoal bg-white" title="Test Live Interactive Demo">
+                  <i class="bi bi-play-circle text-warning me-1"></i> Live Demo
+                </a>
+                {% endif %}
+              </div>
+              <a href="{{ url_for('public.enquire', website=project.slug) }}" class="btn btn-sm btn-gold w-100 d-inline-flex align-items-center justify-content-center gap-1 shadow-sm" title="Get a Website Like This">
+                <span>Get a Website Like This</span>
+                <i class="bi bi-arrow-right"></i>
               </a>
             </div>
           </div>

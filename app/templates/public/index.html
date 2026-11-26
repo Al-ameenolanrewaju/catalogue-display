@@ -4,22 +4,25 @@
 
 {% block content %}
 <!-- 2. Hero Section -->
-<section class="py-5 py-lg-6 position-relative overflow-hidden" style="background: linear-gradient(180deg, rgba(244, 239, 230, 0.4) 0%, rgba(250, 248, 245, 1) 100%);">
-  <div class="container py-4 py-lg-5">
+<section class="py-5 py-lg-6 position-relative overflow-hidden" style="background: linear-gradient(180deg, rgba(244, 239, 230, 0.45) 0%, rgba(250, 248, 245, 1) 100%);">
+  <div class="container py-2 py-lg-4">
     <div class="row align-items-center g-5">
+      <!-- Left Column: Value Proposition & CTAs -->
       <div class="col-lg-7 text-center text-lg-start">
         <div class="d-inline-flex align-items-center gap-2 px-3 py-1 rounded-pill bg-white border border-subtle shadow-sm mb-4">
-          <span class="badge bg-warning text-dark fw-bold rounded-pill" style="font-size: 0.7rem;">PROVEN DESIGNS</span>
-          <span class="small fw-semibold text-charcoal">Live Demonstrations & Transparent Pricing</span>
+          <span class="badge bg-warning text-dark fw-bold rounded-pill" style="font-size: 0.7rem; padding: 0.35rem 0.65rem;">DIGITAL SHOWROOM</span>
+          <span class="small fw-semibold text-charcoal">Tested Website Concepts & Transparent Pricing</span>
         </div>
-        <h1 class="display-4 fw-extrabold font-heading text-charcoal mb-4 lh-sm">
+        
+        <h1 class="display-4 fw-extrabold font-heading text-charcoal mb-4" style="line-height: 1.15; letter-spacing: -0.03em; max-width: 640px;">
           {{ hero_title }}
         </h1>
-        <p class="lead text-muted-charcoal mb-5 pe-lg-4 fs-5">
+        
+        <p class="lead text-muted-charcoal mb-4 pe-lg-3 fs-5" style="max-width: 580px; line-height: 1.7;">
           {{ hero_subtitle }}
         </p>
 
-        <div class="d-flex flex-column flex-sm-row gap-3 justify-content-center justify-content-lg-start">
+        <div class="d-flex flex-column flex-sm-row gap-3 justify-content-center justify-content-lg-start mb-4">
           <a href="{{ url_for('public.catalogue') }}" class="btn btn-gold btn-lg d-inline-flex align-items-center justify-content-center gap-2 px-4 shadow">
             <i class="bi bi-grid-3x3-gap"></i>
             <span>Browse Website Catalogue</span>
@@ -30,41 +33,81 @@
           </a>
         </div>
 
-        <div class="row g-4 mt-4 pt-3 border-top border-subtle text-start">
+        <!-- Trust Badges Strip -->
+        <div class="row g-3 pt-3 border-top border-subtle text-start" style="max-width: 600px;">
           <div class="col-4">
-            <div class="font-heading fw-bold fs-4 text-charcoal">100%</div>
-            <div class="small text-muted">Mobile Ready</div>
+            <div class="d-flex align-items-center gap-2">
+              <i class="bi bi-phone text-warning fs-4"></i>
+              <div>
+                <div class="font-heading fw-bold fs-6 text-charcoal lh-1">100% Mobile</div>
+                <small class="text-muted" style="font-size: 0.72rem;">Tested Across Devices</small>
+              </div>
+            </div>
           </div>
           <div class="col-4">
-            <div class="font-heading fw-bold fs-4 text-charcoal">5 to 10 Days</div>
-            <div class="small text-muted">Average Delivery</div>
+            <div class="d-flex align-items-center gap-2">
+              <i class="bi bi-lightning-charge text-warning fs-4"></i>
+              <div>
+                <div class="font-heading fw-bold fs-6 text-charcoal lh-1">5-10 Days</div>
+                <small class="text-muted" style="font-size: 0.72rem;">Rapid Deployment</small>
+              </div>
+            </div>
           </div>
           <div class="col-4">
-            <div class="font-heading fw-bold fs-4 text-charcoal">₦0 Surprise</div>
-            <div class="small text-muted">Fixed Transparent Scope</div>
+            <div class="d-flex align-items-center gap-2">
+              <i class="bi bi-shield-check text-warning fs-4"></i>
+              <div>
+                <div class="font-heading fw-bold fs-6 text-charcoal lh-1">Fixed Scope</div>
+                <small class="text-muted" style="font-size: 0.72rem;">₦0 Hidden Surprises</small>
+              </div>
+            </div>
           </div>
         </div>
       </div>
 
+      <!-- Right Column: Interactive Browser Frame Mockup -->
       <div class="col-lg-5">
-        <div class="position-relative">
-          <!-- Stacked preview card hero illustration -->
-          <div class="bg-white p-3 p-sm-4 rounded-4 shadow-lg border border-subtle">
-            <div class="d-flex align-items-center justify-content-between mb-3 border-bottom pb-2">
-              <div class="d-flex align-items-center gap-2">
-                <span class="rounded-circle bg-danger d-inline-block" style="width: 10px; height: 10px;"></span>
-                <span class="rounded-circle bg-warning d-inline-block" style="width: 10px; height: 10px;"></span>
-                <span class="rounded-circle bg-success d-inline-block" style="width: 10px; height: 10px;"></span>
+        <div class="hero-mockup-wrapper">
+          <div class="hero-browser-card bg-white rounded-4 shadow-lg border border-subtle overflow-hidden">
+            <!-- Browser Header Bar -->
+            <div class="hero-browser-header bg-warm-surface px-3 py-2 border-bottom border-subtle d-flex align-items-center justify-content-between">
+              <div class="d-flex align-items-center gap-1">
+                <span class="rounded-circle d-inline-block" style="width: 10px; height: 10px; background-color: #FF5F56;"></span>
+                <span class="rounded-circle d-inline-block" style="width: 10px; height: 10px; background-color: #FFBD2E;"></span>
+                <span class="rounded-circle d-inline-block" style="width: 10px; height: 10px; background-color: #27C93F;"></span>
               </div>
-              <span class="badge bg-light text-muted border small">Live Showroom Experience</span>
+              <div class="hero-browser-url bg-white rounded-pill px-3 py-1 text-muted border border-subtle text-truncate" style="font-size: 0.72rem; max-width: 220px;">
+                <i class="bi bi-lock-fill text-success me-1"></i> apexcraft.ng/showroom
+              </div>
+              <span class="badge bg-light text-muted border" style="font-size: 0.65rem;">APPROVED CONCEPT</span>
             </div>
-            <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=800&q=80" alt="Website Showroom" class="img-fluid rounded-3 mb-3 shadow-sm border" style="max-height: 280px; width: 100%; object-fit: cover;">
-            <div class="d-flex justify-content-between align-items-center">
-              <div>
-                <h6 class="fw-bold mb-0 text-charcoal">Pre-Built & Customizable</h6>
-                <small class="text-muted">Explore real layouts before investing a single Naira.</small>
+
+            <!-- Preview Screenshot -->
+            <div class="hero-browser-body position-relative">
+              <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=1000&q=80" alt="Website Sales Catalogue Showroom" class="img-fluid w-100 d-block" style="object-fit: cover; aspect-ratio: 16 / 11; max-height: 330px;">
+              
+              <!-- Floating Live Showroom Status Pill -->
+              <div class="hero-floating-badge shadow-sm">
+                <div class="d-flex align-items-center gap-2">
+                  <span class="pulse-indicator"></span>
+                  <div>
+                    <div class="fw-bold text-charcoal lh-1" style="font-size: 0.78rem;">Showroom Ready</div>
+                    <small class="text-muted" style="font-size: 0.68rem;">Explore interactive designs</small>
+                  </div>
+                </div>
               </div>
-              <a href="{{ url_for('public.catalogue') }}" class="btn btn-sm btn-gold">Explore</a>
+            </div>
+
+            <!-- Mockup Footer Info -->
+            <div class="p-3 bg-white d-flex align-items-center justify-content-between border-top border-subtle">
+              <div>
+                <div class="fw-bold text-charcoal small lh-1">Explore Pre-Built Concepts</div>
+                <small class="text-muted" style="font-size: 0.72rem;">Choose a concept and request customisation</small>
+              </div>
+              <a href="{{ url_for('public.catalogue') }}" class="btn btn-sm btn-gold d-inline-flex align-items-center gap-1">
+                <span>Explore</span>
+                <i class="bi bi-chevron-right"></i>
+              </a>
             </div>
           </div>
         </div>
@@ -74,8 +117,8 @@
 </section>
 
 <!-- 3. Featured Website Showcases -->
-<section class="py-5 bg-warm-main">
-  <div class="container py-4">
+<section class="section-py bg-warm-main">
+  <div class="container">
     <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-end mb-5">
       <div>
         <span class="text-uppercase tracking-wider small fw-bold text-warning" style="letter-spacing: 0.1em;">OUR SHOWROOM</span>
@@ -94,43 +137,53 @@
         <div class="showcase-card">
           <div class="showcase-img-wrap">
             <div class="showcase-badges">
-              {% if project.is_featured %}
-              <span class="custom-badge custom-badge-featured"><i class="bi bi-star-fill me-1"></i> Featured</span>
-              {% endif %}
-              <span class="custom-badge">{{ project.category.name if project.category else 'Business' }}</span>
+              <div class="showcase-badges-group">
+                {% if project.is_featured %}
+                <span class="custom-badge custom-badge-featured"><i class="bi bi-star-fill me-1"></i> Featured</span>
+                {% endif %}
+                <span class="custom-badge">{{ project.category.name if project.category else 'Business' }}</span>
+              </div>
+              <span class="custom-badge custom-badge-status">
+                <i class="bi bi-patch-check text-warning me-1"></i> Available
+              </span>
             </div>
             <img src="{{ project.primary_image_url }}" alt="{{ project.title }}" loading="lazy">
           </div>
 
           <div class="p-4 d-flex flex-column flex-grow-1">
-            <div class="small text-muted fw-semibold mb-1 text-uppercase" style="font-size: 0.75rem; letter-spacing: 0.05em;">
-              Ideal for: {{ project.intended_business_type }}
+            <div class="small text-muted fw-semibold mb-1 text-uppercase" style="font-size: 0.72rem; letter-spacing: 0.05em;">
+              <i class="bi bi-building me-1"></i> Target: {{ project.intended_business_type }}
             </div>
             <h5 class="fw-bold text-charcoal mb-2 font-heading">{{ project.title }}</h5>
-            <p class="text-muted small mb-3 flex-grow-1 line-clamp-2">
+            <p class="text-muted small mb-3 line-clamp-2" style="min-height: 2.6rem;">
               {{ project.short_description }}
             </p>
 
             <!-- Feature tags -->
-            <div class="d-flex flex-wrap gap-1 mb-4">
+            <div class="showcase-features-list mb-3">
               {% for feat in project.features[:3] %}
-              <span class="badge bg-light text-dark border font-normal" style="font-size: 0.72rem;">{{ feat.feature_text }}</span>
+              <div class="showcase-feature-chip">
+                <i class="bi bi-check2 text-success"></i>
+                <span class="text-truncate">{{ feat.feature_text }}</span>
+              </div>
               {% endfor %}
             </div>
 
-            <!-- Actions -->
-            <div class="d-flex align-items-center justify-content-between pt-3 border-top border-subtle gap-2">
-              {% if project.live_demo_url %}
-              <a href="{{ url_for('public.live_preview', slug=project.slug) }}" class="btn btn-sm btn-outline-secondary d-inline-flex align-items-center gap-1 border-subtle" title="Test Live Interactive Demo">
-                <i class="bi bi-play-circle"></i> Live Demo
-              </a>
-              {% endif %}
-              <a href="{{ url_for('public.showcase_detail', slug=project.slug) }}" class="btn btn-sm btn-outline-dark">
-                Details
-              </a>
-              <a href="{{ url_for('public.enquire', website=project.slug) }}" class="btn btn-sm btn-gold d-inline-flex align-items-center gap-1" title="Get a Website Like This">
-                <span>Get This</span>
-                <i class="bi bi-chevron-right"></i>
+            <!-- Two-Tiered Actions: Details/Demo + Get This Design -->
+            <div class="mt-auto pt-3 border-top border-subtle">
+              <div class="d-flex align-items-center gap-2 mb-2">
+                <a href="{{ url_for('public.showcase_detail', slug=project.slug) }}" class="btn btn-sm btn-outline-dark flex-grow-1">
+                  <i class="bi bi-info-circle me-1"></i> Details
+                </a>
+                {% if project.live_demo_url %}
+                <a href="{{ url_for('public.live_preview', slug=project.slug) }}" class="btn btn-sm btn-outline-secondary flex-grow-1 border-subtle text-charcoal bg-white" title="Test Live Interactive Demo">
+                  <i class="bi bi-play-circle text-warning me-1"></i> Live Demo
+                </a>
+                {% endif %}
+              </div>
+              <a href="{{ url_for('public.enquire', website=project.slug) }}" class="btn btn-sm btn-gold w-100 d-inline-flex align-items-center justify-content-center gap-1 shadow-sm" title="Get a Website Like This">
+                <span>Get a Website Like This</span>
+                <i class="bi bi-arrow-right"></i>
               </a>
             </div>
           </div>
@@ -142,12 +195,12 @@
 </section>
 
 <!-- 4. Website Categories -->
-<section class="py-5 bg-white border-top border-bottom border-subtle">
-  <div class="container py-4">
+<section class="section-py bg-white border-top border-bottom border-subtle">
+  <div class="container">
     <div class="text-center max-w-700 mx-auto mb-5">
       <span class="text-uppercase tracking-wider small fw-bold text-warning" style="letter-spacing: 0.1em;">INDUSTRY SOLUTIONS</span>
       <h2 class="display-6 fw-bold font-heading text-charcoal mt-1">Tailored for Your Exact Industry</h2>
-      <p class="text-muted">Select your sector to view optimized designs built with your business workflow in mind.</p>
+      <p class="text-muted mb-0">Select your sector to view optimized designs built with your business workflow in mind.</p>
     </div>
 
     <div class="row g-3 justify-content-center">
@@ -184,12 +237,12 @@
 </section>
 
 <!-- 5. Reasons to Get a Professional Website -->
-<section class="py-5 bg-warm-main">
-  <div class="container py-4">
+<section class="section-py bg-warm-main">
+  <div class="container">
     <div class="text-center max-w-700 mx-auto mb-5">
       <span class="text-uppercase tracking-wider small fw-bold text-warning" style="letter-spacing: 0.1em;">WHY TAKE THE LEAP?</span>
       <h2 class="display-6 fw-bold font-heading text-charcoal mt-1">Why Your Business Needs More Than Social Media</h2>
-      <p class="text-muted">Relying solely on Instagram or TikTok leaves your revenue vulnerable to shadowbans, algorithmic changes, and lost customer confidence.</p>
+      <p class="text-muted mb-0">Relying solely on Instagram or TikTok leaves your revenue vulnerable to shadowbans, algorithmic changes, and lost customer confidence.</p>
     </div>
 
     <div class="row g-4">
@@ -269,12 +322,12 @@
 </section>
 
 <!-- 6. How the Process Works -->
-<section id="process" class="py-5 bg-white border-top border-bottom border-subtle">
-  <div class="container py-4">
+<section id="process" class="section-py bg-white border-top border-bottom border-subtle">
+  <div class="container">
     <div class="text-center max-w-700 mx-auto mb-5">
       <span class="text-uppercase tracking-wider small fw-bold text-warning" style="letter-spacing: 0.1em;">TRANSPARENT WORKFLOW</span>
       <h2 class="display-6 fw-bold font-heading text-charcoal mt-1">How We Bring Your Website to Life</h2>
-      <p class="text-muted">A clear, stress-free four-step journey from design exploration to revenue launch.</p>
+      <p class="text-muted mb-0">A clear, stress-free four-step journey from design exploration to revenue launch.</p>
     </div>
 
     <div class="row g-4">
@@ -282,7 +335,7 @@
         <div class="p-3">
           <div class="font-heading fw-extrabold display-5 text-warning mb-2 opacity-75">01</div>
           <h5 class="fw-bold font-heading text-charcoal mb-2">Explore & Select Concept</h5>
-          <p class="text-muted small">
+          <p class="text-muted small mb-0">
             Browse our live showroom, test responsive demos, and identify a layout structure that matches your business model.
           </p>
         </div>
@@ -292,7 +345,7 @@
         <div class="p-3">
           <div class="font-heading fw-extrabold display-5 text-warning mb-2 opacity-75">02</div>
           <h5 class="fw-bold font-heading text-charcoal mb-2">Choose Package & Add-Ons</h5>
-          <p class="text-muted small">
+          <p class="text-muted small mb-0">
             Pick a package tier, select required functionality (payment gateways, WhatsApp ordering, booking systems), and submit your brief.
           </p>
         </div>
@@ -302,7 +355,7 @@
         <div class="p-3">
           <div class="font-heading fw-extrabold display-5 text-warning mb-2 opacity-75">03</div>
           <h5 class="fw-bold font-heading text-charcoal mb-2">Customisation & Build</h5>
-          <p class="text-muted small">
+          <p class="text-muted small mb-0">
             We adapt the layout with your brand identity, colors, products, copy, and integrate payment/checkout systems within 5 to 10 days.
           </p>
         </div>
@@ -312,7 +365,7 @@
         <div class="p-3">
           <div class="font-heading fw-extrabold display-5 text-warning mb-2 opacity-75">04</div>
           <h5 class="fw-bold font-heading text-charcoal mb-2">Review, Launch & Sell</h5>
-          <p class="text-muted small">
+          <p class="text-muted small mb-0">
             We review the live staging site together, connect your custom domain, provide training, and open the doors for customer orders.
           </p>
         </div>
@@ -322,12 +375,12 @@
 </section>
 
 <!-- 7. Package Overview -->
-<section class="py-5 bg-warm-main">
-  <div class="container py-4">
+<section class="section-py bg-warm-main">
+  <div class="container">
     <div class="text-center max-w-700 mx-auto mb-5">
       <span class="text-uppercase tracking-wider small fw-bold text-warning" style="letter-spacing: 0.1em;">CLEAR PRICING</span>
       <h2 class="display-6 fw-bold font-heading text-charcoal mt-1">Packages Built for Growth</h2>
-      <p class="text-muted">Predictable fixed pricing with no hidden surprises. All packages include mobile optimization and launch guidance.</p>
+      <p class="text-muted mb-0">Predictable fixed pricing with no hidden surprises. All packages include mobile optimization and launch guidance.</p>
     </div>
 
     <div class="row g-4 align-items-stretch justify-content-center">
@@ -376,12 +429,12 @@
 </section>
 
 <!-- 8. Frequently Asked Questions -->
-<section id="faq" class="py-5 bg-white border-top border-bottom border-subtle">
-  <div class="container py-4">
+<section id="faq" class="section-py bg-white border-top border-bottom border-subtle">
+  <div class="container">
     <div class="text-center max-w-700 mx-auto mb-5">
       <span class="text-uppercase tracking-wider small fw-bold text-warning" style="letter-spacing: 0.1em;">ANSWERS & CLARITY</span>
       <h2 class="display-6 fw-bold font-heading text-charcoal mt-1">Frequently Asked Questions</h2>
-      <p class="text-muted">Everything you need to know about purchasing and launching your website with us.</p>
+      <p class="text-muted mb-0">Everything you need to know about purchasing and launching your website with us.</p>
     </div>
 
     <div class="row justify-content-center">
@@ -458,8 +511,8 @@
 </section>
 
 <!-- 9. Final Enquiry Call to Action -->
-<section class="py-5 bg-warm-soft">
-  <div class="container py-5 text-center">
+<section class="section-py bg-warm-soft">
+  <div class="container text-center">
     <div class="max-w-700 mx-auto">
       <div class="bg-white rounded-circle d-inline-flex p-3 shadow-sm mb-3 text-warning">
         <i class="bi bi-rocket-takeoff fs-2"></i>
