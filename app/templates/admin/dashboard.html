@@ -3,89 +3,126 @@
 {% block page_title %}Dashboard Overview{% endblock %}
 
 {% block content %}
-<!-- Top Metrics Row -->
-<div class="row g-4 mb-4">
+<!-- Stripe / Vercel Clean SaaS Metric Cards -->
+<div class="row g-3 g-xl-4 mb-4">
+  <!-- Card 1: New Enquiries -->
   <div class="col-sm-6 col-xl-3">
-    <div class="bg-white p-4 rounded-4 border border-subtle shadow-sm h-100">
-      <div class="d-flex align-items-center justify-content-between mb-2">
-        <span class="text-muted small fw-semibold">Published Showcases</span>
-        <span class="badge bg-success-subtle text-success border border-success-subtle">Live</span>
+    <div class="saas-card p-4 h-100">
+      <div class="d-flex align-items-center justify-content-between mb-3">
+        <span class="text-muted small fw-bold text-uppercase" style="letter-spacing: 0.05em; font-size: 0.72rem;">New Enquiries</span>
+        <div class="saas-stat-icon bg-primary-subtle text-primary">
+          <i class="bi bi-inbox-fill"></i>
+        </div>
       </div>
-      <div class="font-heading display-6 fw-bold text-charcoal mb-1">{{ metrics.published_projects }}</div>
-      <div class="small text-muted">
-        <span class="text-secondary fw-semibold">{{ metrics.draft_projects }}</span> draft projects
+      <div class="font-heading display-6 fw-bold text-dark mb-1">{{ metrics.new_enquiries }}</div>
+      <div class="d-flex align-items-center justify-content-between pt-2 border-top small" style="border-color: #F1F5F9 !important;">
+        <span class="text-muted">Total Received:</span>
+        <strong class="text-dark">{{ metrics.total_enquiries }} leads</strong>
       </div>
     </div>
   </div>
 
+  <!-- Card 2: Published Showcases -->
   <div class="col-sm-6 col-xl-3">
-    <div class="bg-white p-4 rounded-4 border border-subtle shadow-sm h-100">
-      <div class="d-flex align-items-center justify-content-between mb-2">
-        <span class="text-muted small fw-semibold">New Enquiries</span>
-        <span class="badge bg-primary text-white">Action Needed</span>
+    <div class="saas-card p-4 h-100">
+      <div class="d-flex align-items-center justify-content-between mb-3">
+        <span class="text-muted small fw-bold text-uppercase" style="letter-spacing: 0.05em; font-size: 0.72rem;">Published Showcases</span>
+        <div class="saas-stat-icon bg-success-subtle text-success">
+          <i class="bi bi-display"></i>
+        </div>
       </div>
-      <div class="font-heading display-6 fw-bold text-primary mb-1">{{ metrics.new_enquiries }}</div>
-      <div class="small text-muted">Out of <strong class="text-charcoal">{{ metrics.total_enquiries }}</strong> total enquiries</div>
+      <div class="font-heading display-6 fw-bold text-dark mb-1">{{ metrics.published_projects }}</div>
+      <div class="d-flex align-items-center justify-content-between pt-2 border-top small" style="border-color: #F1F5F9 !important;">
+        <span class="text-muted">Draft Concepts:</span>
+        <span class="text-muted">{{ metrics.draft_projects }} unpublished</span>
+      </div>
     </div>
   </div>
 
+  <!-- Card 3: Closed / Won Deals -->
   <div class="col-sm-6 col-xl-3">
-    <div class="bg-white p-4 rounded-4 border border-subtle shadow-sm h-100">
-      <div class="d-flex align-items-center justify-content-between mb-2">
-        <span class="text-muted small fw-semibold">Won Deals</span>
-        <span class="badge bg-warning-subtle text-dark border border-warning-subtle">Closed</span>
+    <div class="saas-card p-4 h-100">
+      <div class="d-flex align-items-center justify-content-between mb-3">
+        <span class="text-muted small fw-bold text-uppercase" style="letter-spacing: 0.05em; font-size: 0.72rem;">Closed Deals</span>
+        <div class="saas-stat-icon bg-warning-subtle text-warning">
+          <i class="bi bi-check-circle-fill"></i>
+        </div>
       </div>
-      <div class="font-heading display-6 fw-bold text-warning mb-1">{{ metrics.won_enquiries }}</div>
-      <div class="small text-muted">Conversion Rate: <strong class="text-success">{{ metrics.conversion_rate }}%</strong></div>
+      <div class="font-heading display-6 fw-bold text-dark mb-1">{{ metrics.won_enquiries }}</div>
+      <div class="d-flex align-items-center justify-content-between pt-2 border-top small" style="border-color: #F1F5F9 !important;">
+        <span class="text-muted">Conversion Rate:</span>
+        <span class="badge bg-success-subtle text-success border border-success-subtle fw-semibold">{{ metrics.conversion_rate }}%</span>
+      </div>
     </div>
   </div>
 
+  <!-- Card 4: Showroom Traffic -->
   <div class="col-sm-6 col-xl-3">
-    <div class="bg-white p-4 rounded-4 border border-subtle shadow-sm h-100">
-      <div class="d-flex align-items-center justify-content-between mb-2">
-        <span class="text-muted small fw-semibold">Catalogue Views</span>
-        <span class="badge bg-light text-muted border">Traffic</span>
+    <div class="saas-card p-4 h-100">
+      <div class="d-flex align-items-center justify-content-between mb-3">
+        <span class="text-muted small fw-bold text-uppercase" style="letter-spacing: 0.05em; font-size: 0.72rem;">Catalogue Traffic</span>
+        <div class="saas-stat-icon bg-info-subtle text-info">
+          <i class="bi bi-graph-up-arrow"></i>
+        </div>
       </div>
-      <div class="font-heading display-6 fw-bold text-charcoal mb-1">
+      <div class="font-heading display-6 fw-bold text-dark mb-1">
         {% set total_views = namespace(count=0) %}
         {% for p in recent_projects %}
           {% set total_views.count = total_views.count + (p.views_count or 0) %}
         {% endfor %}
         {{ total_views.count + 84 }}
       </div>
-      <div class="small text-muted">Across all live showrooms</div>
+      <div class="d-flex align-items-center justify-content-between pt-2 border-top small" style="border-color: #F1F5F9 !important;">
+        <span class="text-muted">Total Views:</span>
+        <span class="text-success fw-bold"><i class="bi bi-arrow-up-short"></i> Active</span>
+      </div>
     </div>
   </div>
 </div>
 
-<div class="row g-4 mb-4">
-  <!-- Recent Client Enquiries Table -->
+<!-- Main Row: Recent Inquiries + Sidecards -->
+<div class="row g-3 g-xl-4 mb-4">
+  <!-- Recent Client Inquiries (8 cols) -->
   <div class="col-lg-8">
-    <div class="bg-white rounded-4 border border-subtle shadow-sm overflow-hidden h-100">
-      <div class="p-3 border-bottom border-subtle d-flex justify-content-between align-items-center">
-        <h6 class="fw-bold font-heading text-charcoal mb-0">Recent Client Inquiries</h6>
-        <a href="{{ url_for('admin.enquiries_list') }}" class="btn btn-sm btn-outline-dark">View All Enquiries</a>
+    <div class="saas-card overflow-hidden h-100 d-flex flex-column">
+      <div class="px-4 py-3 border-bottom d-flex flex-wrap justify-content-between align-items-center gap-2" style="border-color: #F1F5F9 !important;">
+        <div class="d-flex align-items-center gap-2">
+          <h6 class="fw-bold font-heading text-dark mb-0">Recent Client Inquiries</h6>
+          <span class="badge bg-light text-muted border">{{ recent_enquiries|length }} newest</span>
+        </div>
+        <a href="{{ url_for('admin.enquiries_list') }}" class="btn btn-sm btn-outline-secondary bg-white text-dark py-1 px-3">
+          <span>View All</span> <i class="bi bi-arrow-right ms-1"></i>
+        </a>
       </div>
 
-      <div class="table-responsive">
+      <div class="table-responsive flex-grow-1">
         <table class="table table-hover align-middle mb-0 small">
-          <thead class="table-light">
+          <thead class="table-light text-muted text-uppercase" style="font-size: 0.7rem; letter-spacing: 0.05em; background-color: #F8FAFC;">
             <tr>
-              <th>Ref</th>
-              <th>Client & Business</th>
-              <th>Interested Website</th>
+              <th class="ps-4">Reference</th>
+              <th>Client &amp; Business</th>
+              <th>Selected Website</th>
               <th>Status</th>
-              <th>Date</th>
-              <th>Action</th>
+              <th>Received</th>
+              <th class="text-end pe-4">Action</th>
             </tr>
           </thead>
           <tbody>
             {% for enq in recent_enquiries %}
             <tr>
-              <td class="fw-bold font-monospace">{{ enq.reference_code }}</td>
+              <td class="ps-4">
+                <span class="badge bg-light text-dark border font-monospace">{{ enq.reference_code }}</span>
+              </td>
               <td>
-                <div class="fw-bold text-charcoal">{{ enq.business_name }}</div>
-                <div class="text-muted">{{ enq.full_name }} ({{ enq.whatsapp_number }})</div>
+                <div class="d-flex align-items-center gap-2">
+                  <div class="rounded-circle bg-light text-dark border fw-bold d-flex align-items-center justify-content-center flex-shrink-0" style="width: 32px; height: 32px; font-size: 0.75rem;">
+                    {{ enq.full_name[:2].upper() }}
+                  </div>
+                  <div>
+                    <div class="fw-bold text-dark">{{ enq.business_name }}</div>
+                    <div class="text-muted" style="font-size: 0.78rem;">{{ enq.full_name }} &bull; {{ enq.whatsapp_number }}</div>
+                  </div>
+                </div>
               </td>
               <td>
                 {% if enq.website %}
@@ -97,16 +134,19 @@
               <td>
                 <span class="badge {{ enq.status_badge_class }}">{{ enq.status }}</span>
               </td>
-              <td class="text-muted">{{ enq.created_at.strftime('%b %d, %H:%M') }}</td>
-              <td>
-                <a href="{{ url_for('admin.enquiry_detail', enquiry_id=enq.id) }}" class="btn btn-sm btn-outline-primary">
+              <td class="text-muted" style="font-size: 0.8rem;">{{ enq.created_at.strftime('%b %d, %H:%M') }}</td>
+              <td class="text-end pe-4">
+                <a href="{{ url_for('admin.enquiry_detail', enquiry_id=enq.id) }}" class="btn btn-sm btn-outline-secondary bg-white text-dark py-1 px-2">
                   Review
                 </a>
               </td>
             </tr>
             {% else %}
             <tr>
-              <td colspan="6" class="text-center py-4 text-muted">No client enquiries yet.</td>
+              <td colspan="6" class="text-center py-5 text-muted">
+                <i class="bi bi-inbox fs-2 d-block mb-2 text-secondary opacity-50"></i>
+                No client inquiries recorded yet.
+              </td>
             </tr>
             {% endfor %}
           </tbody>
@@ -115,41 +155,51 @@
     </div>
   </div>
 
-  <!-- Showroom Demand & Top Viewed Sidecards -->
+  <!-- Showroom Demand & Quick Studio Actions (4 cols) -->
   <div class="col-lg-4">
-    <!-- Top Viewed Showcases -->
-    <div class="bg-white p-4 rounded-4 border border-subtle shadow-sm mb-4">
-      <h6 class="fw-bold font-heading text-charcoal mb-3">Most Viewed Showcases</h6>
+    <!-- Top Viewed Showcases Card -->
+    <div class="saas-card p-4 mb-3 mb-xl-4">
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <h6 class="fw-bold font-heading text-dark mb-0">Most Viewed Showcases</h6>
+        <span class="badge bg-light text-muted border">Traffic</span>
+      </div>
       <ul class="list-unstyled mb-0 d-flex flex-column gap-3">
         {% for top in metrics.top_viewed %}
         <li class="d-flex align-items-center justify-content-between small">
           <div class="d-flex align-items-center gap-2">
-            <img src="{{ top.primary_image_url }}" alt="{{ top.title }}" class="rounded-2" style="width: 40px; height: 30px; object-fit: cover;">
+            <img src="{{ top.primary_image_url }}" alt="{{ top.title }}" class="rounded-2 border" style="width: 44px; height: 32px; object-fit: cover;">
             <div>
-              <div class="fw-semibold text-charcoal text-truncate" style="max-width: 170px;">{{ top.title }}</div>
-              <small class="text-muted">{{ top.category.name if top.category else 'Business' }}</small>
+              <div class="fw-semibold text-dark text-truncate" style="max-width: 160px;">{{ top.title }}</div>
+              <small class="text-muted" style="font-size: 0.75rem;">{{ top.category.name if top.category else 'Business' }}</small>
             </div>
           </div>
-          <span class="badge bg-warm-surface text-charcoal border">{{ top.views_count }} views</span>
+          <span class="badge bg-light text-dark border fw-bold">{{ top.views_count }} views</span>
         </li>
         {% else %}
-        <li class="text-muted small">No traffic recorded yet.</li>
+        <li class="text-muted small py-3 text-center">No traffic recorded yet.</li>
         {% endfor %}
       </ul>
     </div>
 
-    <!-- Quick Management Links -->
-    <div class="bg-warm-surface p-4 rounded-4 border border-subtle">
-      <h6 class="fw-bold font-heading text-charcoal mb-3">Quick Actions</h6>
+    <!-- Quick Studio Actions Card -->
+    <div class="saas-card p-4">
+      <h6 class="fw-bold font-heading text-dark mb-3">Quick Studio Actions</h6>
       <div class="d-grid gap-2">
-        <a href="{{ url_for('admin.website_create') }}" class="btn btn-gold btn-sm d-flex align-items-center justify-content-center gap-2">
-          <i class="bi bi-plus-circle"></i> Add New Website Showcase
+        <a href="{{ url_for('admin.website_create') }}" class="btn btn-dark btn-sm d-flex align-items-center justify-content-center gap-2 py-2 shadow-sm">
+          <i class="bi bi-plus-circle"></i>
+          <span>Add Website Showcase</span>
         </a>
-        <a href="{{ url_for('admin.packages_list') }}" class="btn btn-outline-dark btn-sm bg-white d-flex align-items-center justify-content-center gap-2">
-          <i class="bi bi-cash-stack"></i> Adjust Package Prices (₦)
+        <a href="{{ url_for('admin.packages_list') }}" class="btn btn-outline-secondary btn-sm bg-white text-dark d-flex align-items-center justify-content-center gap-2 py-2">
+          <i class="bi bi-cash-stack text-warning"></i>
+          <span>Adjust Package Pricing (₦)</span>
         </a>
-        <a href="{{ url_for('admin.settings') }}" class="btn btn-outline-secondary btn-sm bg-white d-flex align-items-center justify-content-center gap-2">
-          <i class="bi bi-whatsapp"></i> Update WhatsApp / Branding Info
+        <a href="{{ url_for('admin.testimonials_list') }}" class="btn btn-outline-secondary btn-sm bg-white text-dark d-flex align-items-center justify-content-center gap-2 py-2">
+          <i class="bi bi-star text-warning"></i>
+          <span>Manage Testimonials</span>
+        </a>
+        <a href="{{ url_for('admin.settings') }}" class="btn btn-outline-secondary btn-sm bg-white text-dark d-flex align-items-center justify-content-center gap-2 py-2">
+          <i class="bi bi-whatsapp text-success"></i>
+          <span>Update WhatsApp / Settings</span>
         </a>
       </div>
     </div>
