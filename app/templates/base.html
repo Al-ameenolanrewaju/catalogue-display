@@ -6,11 +6,41 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>{% block title %}{{ brand_name }} | Website Showroom & Client Acquisition{% endblock %}</title>
   <meta name="description" content="{% block meta_description %}{{ brand_tagline }}{% endblock %}">
+  <link rel="canonical" href="{% block canonical_url %}{{ request.base_url }}{% endblock %}">
 
-  <!-- Open Graph / Meta -->
-  <meta property="og:title" content="{% block og_title %}{{ brand_name }}{% endblock %}">
+  <!-- Open Graph / Facebook / LinkedIn Meta -->
+  <meta property="og:type" content="{% block og_type %}website{% endblock %}">
+  <meta property="og:url" content="{% block og_url %}{{ request.base_url }}{% endblock %}">
+  <meta property="og:title" content="{% block og_title %}{{ brand_name }} | Website Showroom & Client Acquisition{% endblock %}">
   <meta property="og:description" content="{% block og_description %}{{ brand_tagline }}{% endblock %}">
-  <meta property="og:type" content="website">
+  <meta property="og:image" content="{% block og_image %}https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=1200&q=80{% endblock %}">
+  <meta property="og:site_name" content="{{ brand_name }}">
+
+  <!-- Twitter Card Meta -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="{% block twitter_title %}{{ brand_name }}{% endblock %}">
+  <meta name="twitter:description" content="{% block twitter_description %}{{ brand_tagline }}{% endblock %}">
+  <meta name="twitter:image" content="{% block twitter_image %}https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=1200&q=80{% endblock %}">
+
+  <!-- Search Engine Crawlers -->
+  <meta name="robots" content="index, follow">
+
+  <!-- Structured Data: Schema.org (Organization & WebSite) -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "name": "{{ brand_name }}",
+    "url": "{{ request.url_root.rstrip('/') }}",
+    "description": "{{ brand_tagline }}",
+    "contactPoint": {
+      "@type": "ContactPoint",
+      "telephone": "{{ contact_phone }}",
+      "contactType": "sales",
+      "availableLanguage": ["English"]
+    }
+  }
+  </script>
 
   <!-- Google Fonts: Outfit & Plus Jakarta Sans -->
   <link rel="preconnect" href="https://fonts.googleapis.com">

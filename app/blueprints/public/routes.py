@@ -1,3 +1,4 @@
+from datetime import datetime, timezone
 from flask import Blueprint, render_template, request, redirect, url_for, flash, abort, jsonify, make_response
 from sqlalchemy import or_
 from app.extensions import db
@@ -292,17 +293,30 @@ def sitemap():
     xml_parts.append('<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">')
     
     base = request.url_root.rstrip('/')
+    now_str = datetime.now(timezone.utc).strftime('%Y-%m-%d')
     
     # Core pages
-    core_routes = ['public.index', 'public.catalogue', 'public.packages', 'public.enquire']
-    for r in core_routes:
-        xml_parts.append(f'<url><loc>{base}{url_for(r)}</loc><changefreq>weekly</changefreq><priority>1.0</priority></url>')
+    core_routes = [
+        ('public.index', 'daily', '1.0'),
+        ('public.catalogue', 'daily', '0.9'),
+        ('public.packages', 'weekly', '0.8'),
+        ('public.enquire', 'weekly', '0.8'),
+    ]
+    for r, freq, priority in core_routes:
+        xml_parts.append(f'<url><loc>{base}{url_for(r)}</loc><lastmod>{now_str}</lastmod><changefreq>{freq}</changefreq><priority>{priority}</priority></url>')
         
+    # Categories
+    for cat in categories:
+        cat_url = f"{base}{url_for('public.catalogue')}?category={cat.slug}"
+        xml_parts.append(f'<url><loc>{cat_url}</loc><lastmod>{now_str}</lastmod><changefreq>weekly</changefreq><priority>0.7</priority></url>')
+
+    # Individual Showcase Projects
     for p in projects:
-        xml_parts.append(f'<url><loc>{base}{url_for("public.showcase_detail", slug=p.slug)}</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>')
+        p_date = p.updated_at.strftime('%Y-%m-%d') if hasattr(p, 'updated_at') and p.updated_at else now_str
+        xml_parts.append(f'<url><loc>{base}{url_for("public.showcase_detail", slug=p.slug)}</loc><lastmod>{p_date}</lastmod><changefreq>weekly</changefreq><priority>0.8</priority></url>')
 
     xml_parts.append('</urlset>')
     
     response = make_response("".join(xml_parts))
-    response.headers["Content-Type"] = "application/xml"
+    response.headers["Content-Type"] = "application/xml; charset=utf-8"
     return response

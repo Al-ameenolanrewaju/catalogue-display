@@ -3,6 +3,41 @@
 {% block title %}{{ project.title }} | Website Design Showcase{% endblock %}
 {% block meta_description %}{{ project.short_description }}{% endblock %}
 
+{% block og_title %}{{ project.title }} | {{ brand_name }}{% endblock %}
+{% block og_description %}{{ project.short_description }}{% endblock %}
+{% block og_image %}{{ project.primary_image_url }}{% endblock %}
+
+{% block twitter_title %}{{ project.title }} | {{ brand_name }}{% endblock %}
+{% block twitter_description %}{{ project.short_description }}{% endblock %}
+{% block twitter_image %}{{ project.primary_image_url }}{% endblock %}
+
+{% block extra_head %}
+<!-- Structured Data: CreativeWork / Product Schema -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org/",
+  "@type": "Product",
+  "name": "{{ project.title }}",
+  "image": "{{ project.primary_image_url }}",
+  "description": "{{ project.short_description }}",
+  "category": "{{ project.category.name if project.category else 'Business Website' }}",
+  "brand": {
+    "@type": "Brand",
+    "name": "{{ brand_name }}"
+  },
+  "offers": {
+    "@type": "AggregateOffer",
+    "priceCurrency": "NGN",
+    "availability": "https://schema.org/InStock",
+    "seller": {
+      "@type": "Organization",
+      "name": "{{ brand_name }}"
+    }
+  }
+}
+</script>
+{% endblock %}
+
 {% block content %}
 <!-- Showcase Header -->
 <section class="py-4 bg-warm-surface border-bottom border-subtle">
