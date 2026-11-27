@@ -262,3 +262,51 @@ def test_admin_crud_operations(client):
     # Check updated brand appears on public page without code edit!
     home_res = client.get('/')
     assert b"ElevateCraft Digital Showroom" in home_res.data
+
+
+def test_resend_email_service(app, monkeypatch):
+    """Verifies that Resend email dispatch functions handle configuration states and formatting gracefully."""
+    from app.services.email_service import send_admin_enquiry_alert, send_client_confirmation_email
+    import resend
+
+    with app.app_context():
+        enquiry = Enquiry(
+            full_name="Emeka Adeleke",
+            business_name="Adeleke Fashion",
+            whatsapp_number="08012345678",
+            email="emeka@example.com",
+            additional_requirements="Need Paystack and WhatsApp checkout.",
+            reference_code="ENQ-TEST-1234"
+        )
+        db.session.add(enquiry)
+        db.session.commit()
+
+        # 1. Without API key configured -> returns False safely, does not crash
+        monkeypatch.delenv('RESEND_API_KEY', raising=False)
+        assert send_admin_enquiry_alert(enquiry) is False
+        assert send_client_confirmation_email(enquiry) is False
+
+        # 2. Mock Resend send with active key
+        monkeypatch.setenv('RESEND_API_KEY', 're_test_mock_key_12345')
+        monkeypatch.setenv('ADMIN_NOTIFICATION_EMAIL', 'staff@test.com')
+
+        sent_calls = []
+
+        def mock_send(params):
+            sent_calls.append(params)
+            return {"id": "msg_mock_123"}
+
+        monkeypatch.setattr(resend.Emails, 'send', mock_send)
+
+        # Test admin alert
+        assert send_admin_enquiry_alert(enquiry, brand_name="ApexCraft Studios") is True
+        assert len(sent_calls) == 1
+        assert "New Website Lead" in sent_calls[0]["subject"]
+        assert sent_calls[0]["to"] == ["staff@test.com"]
+        assert enquiry.full_name in sent_calls[0]["html"]
+
+        # Test client confirmation
+        assert send_client_confirmation_email(enquiry, brand_name="ApexCraft Studios") is True
+        assert len(sent_calls) == 2
+        assert "We Received Your Website Inquiry" in sent_calls[1]["subject"]
+        assert sent_calls[1]["to"] == [enquiry.email]

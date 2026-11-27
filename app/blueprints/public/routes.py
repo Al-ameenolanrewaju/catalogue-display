@@ -8,6 +8,7 @@ from app.models import (
 )
 from app.services.analytics_service import record_project_view
 from app.services.whatsapp import build_whatsapp_link, generate_whatsapp_message
+from app.services.email_service import send_admin_enquiry_alert, send_client_confirmation_email
 
 public_bp = Blueprint('public', __name__)
 
@@ -249,6 +250,15 @@ def enquire():
 
         enquiry.calculated_estimate = calculated_estimate if has_estimate else None
         db.session.commit()
+
+        # Send email alerts via Resend (safely guarded)
+        try:
+            brand_name = SiteSetting.get('brand_name', 'ApexCraft Studios')
+            send_admin_enquiry_alert(enquiry, brand_name=brand_name)
+            if enquiry.email:
+                send_client_confirmation_email(enquiry, brand_name=brand_name)
+        except Exception:
+            pass
 
         return redirect(url_for('public.enquiry_confirmation', reference_code=enquiry.reference_code))
 
