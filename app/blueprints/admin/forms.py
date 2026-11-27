@@ -106,4 +106,27 @@ class SiteSettingsForm(FlaskForm):
     faq_q5 = StringField('Question 5', validators=[Optional(), Length(max=255)])
     faq_a5 = TextAreaField('Answer 5', validators=[Optional()])
 
+    # Promo / Announcement Banner
+    promo_banner_active = BooleanField('Enable Top Promo Banner', default=True)
+    promo_banner_text = StringField('Promo Message', validators=[Optional(), Length(max=255)])
+    promo_banner_badge = StringField('Promo Badge Text', validators=[Optional(), Length(max=50)])
+    promo_banner_link = StringField('Promo Target Link', validators=[Optional(), Length(max=255)])
+
+    # Banking & Invoice Details
+    bank_name = StringField('Bank Name', validators=[Optional(), Length(max=100)])
+    account_number = StringField('Bank Account Number', validators=[Optional(), Length(max=50)])
+    account_name = StringField('Account Name', validators=[Optional(), Length(max=100)])
+
     submit = SubmitField('Save Settings')
+
+
+class TestimonialForm(FlaskForm):
+    client_name = StringField('Client Name', validators=[DataRequired(), Length(max=100)])
+    client_role_company = StringField('Role / Company', validators=[DataRequired(), Length(max=120)])
+    project_type = StringField('Project Type (e.g. E-Commerce Store)', validators=[Optional(), Length(max=80)])
+    rating = SelectField('Rating (Stars)', choices=[('5', '★★★★★ (5 Stars)'), ('4', '★★★★☆ (4 Stars)'), ('3', '★★★☆☆ (3 Stars)')], default='5')
+    content = TextAreaField('Testimonial Content / Review', validators=[DataRequired()])
+    avatar_url = StringField('Avatar / Photo URL (Optional)', validators=[Optional(), URL(), Length(max=300)])
+    is_featured = BooleanField('Feature on Homepage', default=True)
+    display_order = IntegerField('Display Order', default=0)
+    submit = SubmitField('Save Testimonial')

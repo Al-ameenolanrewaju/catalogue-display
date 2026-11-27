@@ -174,6 +174,7 @@ def send_client_confirmation_email(enquiry, brand_name=None):
           <div>&bull; <strong>Package:</strong> {package_name}</div>
           <div>&bull; <strong>Estimated Investment:</strong> {estimate_str}</div>
           <div>&bull; <strong>Reference Code:</strong> {enquiry.reference_code}</div>
+          <div style="margin-top: 10px; font-size: 13px; color: #B8860B;">&bull; An official PDF proposal is generated for your reference.</div>
         </div>
 
         <p class="lead"><strong>What happens next?</strong><br>

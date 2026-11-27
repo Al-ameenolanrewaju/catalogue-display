@@ -310,3 +310,156 @@ def test_resend_email_service(app, monkeypatch):
         assert len(sent_calls) == 2
         assert "We Received Your Website Inquiry" in sent_calls[1]["subject"]
         assert sent_calls[1]["to"] == [enquiry.email]
+
+
+def test_calculator_estimator(client):
+    """Verifies that the Interactive Cost & Project Estimator loads and handles form submission."""
+    # 1. GET /calculator
+    res = client.get('/calculator')
+    assert res.status_code == 200
+    assert b"Calculate Your Custom Website Project" in res.data
+    assert b"Choose Your Website Foundation" in res.data
+    assert b"Select Add-On Modules" in res.data
+    assert b"Send Estimate to WhatsApp" in res.data
+
+    # 2. POST /calculator (submit project scope)
+    pkg = Package.query.filter_by(slug='standard').first()
+    addon = AddOn.query.first()
+    assert pkg is not None
+
+    post_data = {
+        'full_name': 'Babatunde Fashola',
+        'business_name': 'Prime Logistics Solutions',
+        'whatsapp_number': '+2348023456789',
+        'email': 'tunde@primelogistics.ng',
+        'package_id': str(pkg.id),
+        'addon_ids': [str(addon.id)] if addon else [],
+        'additional_notes': 'Need express delivery within 5 days.'
+    }
+    submit_res = client.post('/calculator', data=post_data, follow_redirects=False)
+    assert submit_res.status_code == 302
+    assert '/enquiry/' in submit_res.headers['Location']
+
+    enquiry = Enquiry.query.filter_by(business_name='Prime Logistics Solutions').first()
+    assert enquiry is not None
+    assert enquiry.package_id == pkg.id
+    assert enquiry.calculated_estimate is not None
+    assert enquiry.calculated_estimate >= pkg.price
+
+
+def test_pdf_proposal_generation(client):
+    """Verifies official PDF proposal generation for clients and administration."""
+    # Create test enquiry
+    pkg = Package.query.filter_by(slug='standard').first()
+    enquiry = Enquiry(
+        reference_code=Enquiry.generate_reference(),
+        full_name='Folake Coker',
+        business_name='Tiffany Couture',
+        whatsapp_number='2348011122233',
+        email='folake@tiffanycouture.com',
+        package_id=pkg.id if pkg else None,
+        additional_requirements='Bespoke luxury fashion showcase with currency switcher.'
+    )
+    db.session.add(enquiry)
+    db.session.commit()
+
+    # 1. Public client download
+    res = client.get(f'/enquiry/{enquiry.reference_code}/pdf')
+    assert res.status_code == 200
+    assert res.headers['Content-Type'] == 'application/pdf'
+    assert f'Proposal_{enquiry.reference_code}.pdf' in res.headers['Content-Disposition']
+    assert res.data.startswith(b'%PDF')
+
+    # 2. Admin download
+    client.post('/admin/login', data={'identity': 'admin', 'password': 'AdminSecure2026!'}, follow_redirects=True)
+    admin_pdf_res = client.get(f'/admin/enquiries/{enquiry.id}/pdf')
+    assert admin_pdf_res.status_code == 200
+    assert admin_pdf_res.headers['Content-Type'] == 'application/pdf'
+    assert admin_pdf_res.data.startswith(b'%PDF')
+
+
+def test_testimonials_crud_and_rendering(client):
+    """Verifies that testimonials render on homepage and can be managed via Admin CRUD."""
+    from app.models import Testimonial
+
+    # 1. Homepage shows testimonials
+    res = client.get('/')
+    assert res.status_code == 200
+    assert b"What Business Owners Say" in res.data
+    assert b"Funke Adeleke" in res.data
+
+    # 2. Admin login & access testimonials list
+    client.post('/admin/login', data={'identity': 'admin', 'password': 'AdminSecure2026!'}, follow_redirects=True)
+    list_res = client.get('/admin/testimonials')
+    assert list_res.status_code == 200
+    assert b"Client Testimonials &amp; Reviews" in list_res.data
+
+    # 3. Create testimonial
+    create_res = client.post('/admin/testimonials/new', data={
+        'client_name': 'Kolawole Johnson',
+        'client_role_company': 'CEO, Kola Motors Ltd',
+        'project_type': 'Automotive Dealership Showroom',
+        'rating': '5',
+        'content': 'Remarkable speed and attention to mobile usability. Customer inquiries on WhatsApp increased by 60%.',
+        'avatar_url': '',
+        'is_featured': True,
+        'display_order': 0
+    }, follow_redirects=True)
+    assert create_res.status_code == 200
+    assert b"Kola Motors Ltd" in create_res.data
+
+    test_item = Testimonial.query.filter_by(client_name='Kolawole Johnson').first()
+    assert test_item is not None
+    assert test_item.rating == 5
+
+    # 4. Edit testimonial
+    edit_res = client.post(f'/admin/testimonials/{test_item.id}/edit', data={
+        'client_name': 'Kolawole Johnson Updated',
+        'client_role_company': 'CEO, Kola Motors International',
+        'project_type': 'Automotive Dealership Showroom',
+        'rating': '5',
+        'content': 'Updated review content.',
+        'avatar_url': '',
+        'is_featured': True,
+        'display_order': 1
+    }, follow_redirects=True)
+    assert edit_res.status_code == 200
+    assert b"Kola Motors International" in edit_res.data
+
+    # 5. Delete testimonial
+    del_res = client.post(f'/admin/testimonials/{test_item.id}/delete', follow_redirects=True)
+    assert del_res.status_code == 200
+    assert Testimonial.query.filter_by(id=test_item.id).first() is None
+
+
+def test_promo_banner_functionality(client):
+    """Verifies that the top promo announcement banner renders and is toggleable via Admin."""
+    # 1. Default banner is visible
+    res = client.get('/')
+    assert res.status_code == 200
+    assert b"sitePromoBanner" in res.data
+    assert b"Special Offer" in res.data
+
+    # 2. Admin disables promo banner (checkbox unchecked in browser means key is omitted)
+    client.post('/admin/login', data={'identity': 'admin', 'password': 'AdminSecure2026!'}, follow_redirects=True)
+    settings_data = {
+        'brand_name': 'ApexCraft Studios',
+        'brand_tagline': 'Turn Browsers Into Buyers',
+        'hero_title': 'Your Business Deserves More',
+        'hero_subtitle': 'Professional websites designed to help businesses.',
+        'whatsapp_number': '2348000000000',
+        'contact_phone': '+234 800 000 0000',
+        'contact_email': 'hello@apexcraft.ng',
+        'office_address': 'Lagos, Nigeria',
+        'currency_symbol': '₦',
+        # promo_banner_active omitted to simulate unchecked checkbox
+        'promo_banner_text': 'Disabled banner text',
+        'promo_banner_badge': 'OFF',
+        'promo_banner_link': '/packages'
+    }
+    client.post('/admin/settings', data=settings_data, follow_redirects=True)
+
+    # 3. Check public site no longer displays banner
+    disabled_res = client.get('/')
+    assert b"sitePromoBanner" not in disabled_res.data
+

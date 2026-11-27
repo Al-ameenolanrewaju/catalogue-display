@@ -30,10 +30,16 @@
             To expedite your quotation, click the button below. It will open WhatsApp with your pre-formatted enquiry summary ready to send directly to our lead developer.
           </p>
 
-          <a href="{{ whatsapp_url }}" target="_blank" class="btn btn-success btn-lg px-4 py-3 shadow d-inline-flex align-items-center justify-content-center gap-2 mb-3">
-            <i class="bi bi-whatsapp fs-4"></i>
-            <span>Continue to WhatsApp with Enquiry Details</span>
-          </a>
+          <div class="d-flex flex-column flex-sm-row justify-content-center gap-2 mb-3">
+            <a href="{{ whatsapp_url }}" target="_blank" class="btn btn-success btn-lg px-4 py-3 shadow d-inline-flex align-items-center justify-content-center gap-2">
+              <i class="bi bi-whatsapp fs-4"></i>
+              <span>Continue to WhatsApp with Enquiry Details</span>
+            </a>
+            <a href="{{ url_for('public.enquiry_pdf', reference_code=enquiry.reference_code) }}" class="btn btn-outline-dark btn-lg px-4 py-3 shadow-sm d-inline-flex align-items-center justify-content-center gap-2 bg-white">
+              <i class="bi bi-file-earmark-pdf-fill text-danger fs-4"></i>
+              <span>Download Official PDF Quote</span>
+            </a>
+          </div>
 
           <div class="small text-muted">
             Direct Line: <strong class="text-dark">{{ contact_phone }}</strong>

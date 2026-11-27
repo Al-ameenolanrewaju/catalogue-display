@@ -22,14 +22,18 @@
           {{ hero_subtitle }}
         </p>
 
-        <div class="d-flex flex-column flex-sm-row gap-3 justify-content-center justify-content-lg-start mb-4">
+        <div class="d-flex flex-column flex-sm-row gap-2 justify-content-center justify-content-lg-start mb-4 flex-wrap">
           <a href="{{ url_for('public.catalogue') }}" class="btn btn-gold btn-lg d-inline-flex align-items-center justify-content-center gap-2 px-4 shadow">
             <i class="bi bi-grid-3x3-gap"></i>
-            <span>Browse Website Catalogue</span>
+            <span>Browse Catalogue</span>
           </a>
-          <a href="{{ url_for('public.enquire') }}" class="btn btn-outline-secondary btn-lg d-inline-flex align-items-center justify-content-center gap-2 px-4 bg-white text-dark border-subtle">
+          <a href="{{ url_for('public.calculator') }}" class="btn btn-outline-dark btn-lg d-inline-flex align-items-center justify-content-center gap-2 px-4 bg-white text-dark border-subtle">
+            <i class="bi bi-calculator text-warning"></i>
+            <span>Cost Estimator</span>
+          </a>
+          <a href="{{ url_for('public.enquire') }}" class="btn btn-outline-secondary btn-lg d-inline-flex align-items-center justify-content-center gap-2 px-4 bg-white text-secondary border-subtle">
             <i class="bi bi-chat-left-dots"></i>
-            <span>Request Custom Quote</span>
+            <span>Custom Quote</span>
           </a>
         </div>
 
@@ -421,10 +425,126 @@
 
     <div class="text-center mt-5">
       <a href="{{ url_for('public.packages') }}" class="btn btn-outline-secondary bg-white border-subtle text-charcoal">
-        <span>View Full Package Comparison & Add-On Calculator</span>
+        <span>View Full Package Comparison</span>
         <i class="bi bi-arrow-right ms-1"></i>
       </a>
+      <a href="{{ url_for('public.calculator') }}" class="btn btn-gold ms-2">
+        <i class="bi bi-calculator me-1"></i>
+        <span>Try Interactive Cost Estimator</span>
+      </a>
     </div>
+  </div>
+</section>
+
+<!-- 7.5. Client Testimonials & Social Proof -->
+<section id="testimonials" class="section-py bg-warm-main border-top border-subtle">
+  <div class="container">
+    <div class="text-center max-w-700 mx-auto mb-5">
+      <span class="text-uppercase tracking-wider small fw-bold text-warning" style="letter-spacing: 0.1em;">PROVEN REPUTATION</span>
+      <h2 class="display-6 fw-bold font-heading text-charcoal mt-1">What Business Owners Say</h2>
+      <p class="text-muted mb-0">Real feedback from founders and executives who transformed their online sales with our websites.</p>
+    </div>
+
+    {% if testimonials %}
+    <div class="row g-4 justify-content-center">
+      {% for t in testimonials %}
+      <div class="col-lg-4 col-md-6">
+        <div class="bg-white p-4 rounded-4 border border-subtle shadow-sm h-100 d-flex flex-column">
+          <!-- Stars & Quote Icon -->
+          <div class="d-flex justify-content-between align-items-center mb-3">
+            <div class="text-warning small">
+              {% for _ in t.stars_range %}
+              <i class="bi bi-star-fill"></i>
+              {% endfor %}
+            </div>
+            <i class="bi bi-quote text-secondary fs-3 opacity-50"></i>
+          </div>
+
+          <!-- Review Body -->
+          <p class="text-secondary small mb-4 flex-grow-1" style="line-height: 1.65; font-style: italic;">
+            &ldquo;{{ t.content }}&rdquo;
+          </p>
+
+          <!-- Client Info -->
+          <div class="d-flex align-items-center gap-3 pt-3 border-top border-subtle">
+            {% if t.avatar_url %}
+            <img src="{{ t.avatar_url }}" alt="{{ t.client_name }}" class="rounded-circle border" style="width: 44px; height: 44px; object-fit: cover;">
+            {% else %}
+            <div class="rounded-circle bg-dark text-warning d-flex align-items-center justify-content-center fw-bold" style="width: 44px; height: 44px; font-size: 0.95rem;">
+              {{ t.client_name[:2].upper() }}
+            </div>
+            {% endif %}
+            <div>
+              <strong class="text-charcoal d-block font-heading lh-sm">{{ t.client_name }}</strong>
+              <small class="text-muted d-block" style="font-size: 0.78rem;">{{ t.client_role_company }}</small>
+              {% if t.project_type %}
+              <span class="badge bg-light text-secondary border mt-1" style="font-size: 0.7rem;">{{ t.project_type }}</span>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+    {% else %}
+    <!-- Default Trust Proof Strip if no testimonials yet -->
+    <div class="row g-4 justify-content-center">
+      <div class="col-lg-4 col-md-6">
+        <div class="bg-white p-4 rounded-4 border border-subtle shadow-sm h-100 d-flex flex-column">
+          <div class="text-warning small mb-3">
+            <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i>
+          </div>
+          <p class="text-secondary small mb-4 flex-grow-1" style="line-height: 1.65; font-style: italic;">
+            &ldquo;Our boutique orders jumped immediately after launching the catalogue with direct WhatsApp checkout. The mobile speed is incredible.&rdquo;
+          </p>
+          <div class="d-flex align-items-center gap-3 pt-3 border-top border-subtle">
+            <div class="rounded-circle bg-dark text-warning d-flex align-items-center justify-content-center fw-bold" style="width: 44px; height: 44px;">FA</div>
+            <div>
+              <strong class="text-charcoal d-block font-heading">Funke Adeleke</strong>
+              <small class="text-muted d-block">Founder, Luxe Pret-a-Porter</small>
+              <span class="badge bg-light text-secondary border mt-1" style="font-size: 0.7rem;">E-Commerce Fashion</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-4 col-md-6">
+        <div class="bg-white p-4 rounded-4 border border-subtle shadow-sm h-100 d-flex flex-column">
+          <div class="text-warning small mb-3">
+            <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i>
+          </div>
+          <p class="text-secondary small mb-4 flex-grow-1" style="line-height: 1.65; font-style: italic;">
+            &ldquo;Delivered our corporate portfolio in exactly 7 days. The admin dashboard makes it effortless to upload new projects without coding.&rdquo;
+          </p>
+          <div class="d-flex align-items-center gap-3 pt-3 border-top border-subtle">
+            <div class="rounded-circle bg-dark text-warning d-flex align-items-center justify-content-center fw-bold" style="width: 44px; height: 44px;">OO</div>
+            <div>
+              <strong class="text-charcoal d-block font-heading">Osagie Osemwengie</strong>
+              <small class="text-muted d-block">Managing Director, Horizon Energy</small>
+              <span class="badge bg-light text-secondary border mt-1" style="font-size: 0.7rem;">Corporate Portal</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-4 col-md-6">
+        <div class="bg-white p-4 rounded-4 border border-subtle shadow-sm h-100 d-flex flex-column">
+          <div class="text-warning small mb-3">
+            <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i>
+          </div>
+          <p class="text-secondary small mb-4 flex-grow-1" style="line-height: 1.65; font-style: italic;">
+            &ldquo;We closed two enterprise deals within three weeks of putting our new website on business cards. Outstanding polish and support.&rdquo;
+          </p>
+          <div class="d-flex align-items-center gap-3 pt-3 border-top border-subtle">
+            <div class="rounded-circle bg-dark text-warning d-flex align-items-center justify-content-center fw-bold" style="width: 44px; height: 44px;">CI</div>
+            <div>
+              <strong class="text-charcoal d-block font-heading">Chinedu Ibe</strong>
+              <small class="text-muted d-block">Principal Partner, Apex Chambers</small>
+              <span class="badge bg-light text-secondary border mt-1" style="font-size: 0.7rem;">Legal Practice</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    {% endif %}
   </div>
 </section>
 

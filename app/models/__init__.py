@@ -6,6 +6,7 @@ from app.models.addon import AddOn
 from app.models.enquiry import Enquiry, EnquiryAddOn, EnquiryNote, EnquiryStatus
 from app.models.analytics import WebsiteView
 from app.models.settings import SiteSetting
+from app.models.testimonial import Testimonial
 
 __all__ = [
     'AdminUser',
@@ -22,4 +23,5 @@ __all__ = [
     'EnquiryStatus',
     'WebsiteView',
     'SiteSetting',
+    'Testimonial',
 ]

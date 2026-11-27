@@ -1,0 +1,72 @@
+{% extends "admin/base_admin.html" %}
+
+{% block page_title %}{{ title }}{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-lg-8">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <div>
+        <h4 class="fw-bold font-heading text-charcoal mb-0">{{ title }}</h4>
+        <p class="text-muted small mb-0">Feature authentic client quotes and project experiences.</p>
+      </div>
+      <a href="{{ url_for('admin.testimonials_list') }}" class="btn btn-outline-secondary btn-sm">
+        <i class="bi bi-arrow-left"></i> Back to Testimonials
+      </a>
+    </div>
+
+    <div class="bg-white p-4 p-md-5 rounded-4 border border-subtle shadow-sm">
+      <form method="POST">
+        {{ form.hidden_tag() }}
+
+        <div class="row g-3 mb-3">
+          <div class="col-md-6">
+            <label class="form-label small fw-bold text-charcoal">{{ form.client_name.label.text }} <span class="text-danger">*</span></label>
+            {{ form.client_name(class="form-control", placeholder="e.g. Funke Adeleke") }}
+          </div>
+          <div class="col-md-6">
+            <label class="form-label small fw-bold text-charcoal">{{ form.client_role_company.label.text }} <span class="text-danger">*</span></label>
+            {{ form.client_role_company(class="form-control", placeholder="e.g. Founder, Luxe Fashion Lagos") }}
+          </div>
+          <div class="col-md-6">
+            <label class="form-label small fw-bold text-charcoal">{{ form.project_type.label.text }}</label>
+            {{ form.project_type(class="form-control", placeholder="e.g. E-Commerce Website & Paystack") }}
+          </div>
+          <div class="col-md-6">
+            <label class="form-label small fw-bold text-charcoal">{{ form.rating.label.text }}</label>
+            {{ form.rating(class="form-select") }}
+          </div>
+          <div class="col-12">
+            <label class="form-label small fw-bold text-charcoal">{{ form.content.label.text }} <span class="text-danger">*</span></label>
+            {{ form.content(class="form-control", rows="4", placeholder="Write what the client appreciated most about the website, delivery speed, and sales impact...") }}
+          </div>
+          <div class="col-md-8">
+            <label class="form-label small fw-bold text-charcoal">{{ form.avatar_url.label.text }}</label>
+            {{ form.avatar_url(class="form-control", placeholder="https://images.unsplash.com/photo-...") }}
+            <small class="text-muted">Optional. If empty, client initials will be used.</small>
+          </div>
+          <div class="col-md-4">
+            <label class="form-label small fw-bold text-charcoal">{{ form.display_order.label.text }}</label>
+            {{ form.display_order(class="form-control", type="number") }}
+          </div>
+          <div class="col-12">
+            <div class="form-check form-switch mt-2">
+              {{ form.is_featured(class="form-check-input", id="isFeaturedSwitch") }}
+              <label class="form-check-label small fw-bold text-charcoal" for="isFeaturedSwitch">
+                Feature on Public Showroom &amp; Homepage
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <div class="pt-3 border-top border-subtle d-flex gap-2">
+          <button type="submit" class="btn btn-gold btn-lg px-4 shadow-sm">
+            {{ form.submit.label.text }}
+          </button>
+          <a href="{{ url_for('admin.testimonials_list') }}" class="btn btn-outline-secondary btn-lg">Cancel</a>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}

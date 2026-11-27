@@ -1,14 +1,15 @@
 from datetime import datetime, timezone
-from flask import Blueprint, render_template, request, redirect, url_for, flash, abort, jsonify, make_response
+from flask import Blueprint, render_template, request, redirect, url_for, flash, abort, jsonify, make_response, send_file
 from sqlalchemy import or_
 from app.extensions import db
 from app.models import (
     WebsiteProject, WebsiteCategory, Package, AddOn,
-    Enquiry, EnquiryAddOn, EnquiryStatus, SiteSetting
+    Enquiry, EnquiryAddOn, EnquiryStatus, SiteSetting, Testimonial
 )
 from app.services.analytics_service import record_project_view
 from app.services.whatsapp import build_whatsapp_link, generate_whatsapp_message
 from app.services.email_service import send_admin_enquiry_alert, send_client_confirmation_email
+from app.services.pdf_service import generate_enquiry_pdf
 
 public_bp = Blueprint('public', __name__)
 
@@ -45,6 +46,10 @@ def inject_site_settings():
         'linkedin_url': SiteSetting.get('linkedin_url', '#'),
         'facebook_url': SiteSetting.get('facebook_url', '#'),
         'faqs': faqs,
+        'promo_banner_active': SiteSetting.get('promo_banner_active', 'true').lower() == 'true',
+        'promo_banner_text': SiteSetting.get('promo_banner_text', 'Special Offer: Free Domain Name & SSL Included With Any Package This Month!'),
+        'promo_banner_badge': SiteSetting.get('promo_banner_badge', 'LIMITED PROMO'),
+        'promo_banner_link': SiteSetting.get('promo_banner_link', '/calculator'),
     }
 
 
@@ -65,13 +70,15 @@ def index():
     categories = WebsiteCategory.query.filter_by(is_active=True).order_by(WebsiteCategory.display_order.asc()).all()
     packages = Package.query.filter_by(is_active=True).order_by(Package.display_order.asc()).all()
     addons = AddOn.query.filter_by(is_active=True).order_by(AddOn.display_order.asc()).all()
+    testimonials = Testimonial.query.filter_by(is_featured=True).order_by(Testimonial.display_order.asc(), Testimonial.created_at.desc()).limit(6).all()
 
     return render_template(
         'public/index.html',
         featured_projects=featured_projects,
         categories=categories,
         packages=packages,
-        addons=addons
+        addons=addons,
+        testimonials=testimonials
     )
 
 
@@ -310,6 +317,7 @@ def sitemap():
         ('public.index', 'daily', '1.0'),
         ('public.catalogue', 'daily', '0.9'),
         ('public.packages', 'weekly', '0.8'),
+        ('public.calculator', 'weekly', '0.8'),
         ('public.enquire', 'weekly', '0.8'),
     ]
     for r, freq, priority in core_routes:
@@ -330,3 +338,95 @@ def sitemap():
     response = make_response("".join(xml_parts))
     response.headers["Content-Type"] = "application/xml; charset=utf-8"
     return response
+
+
+@public_bp.route('/calculator', methods=['GET', 'POST'])
+def calculator():
+    packages = Package.query.filter_by(is_active=True).order_by(Package.display_order.asc()).all()
+    addons = AddOn.query.filter_by(is_active=True).order_by(AddOn.display_order.asc()).all()
+    projects = WebsiteProject.query.filter_by(is_published=True).order_by(WebsiteProject.title.asc()).all()
+
+    if request.method == 'POST':
+        full_name = request.form.get('full_name', '').strip()
+        business_name = request.form.get('business_name', '').strip()
+        whatsapp_number = request.form.get('whatsapp_number', '').strip()
+        email = request.form.get('email', '').strip() or None
+        package_id_val = request.form.get('package_id', '').strip()
+        package_id = int(package_id_val) if package_id_val and package_id_val.isdigit() else None
+        website_id_val = request.form.get('website_id', '').strip()
+        website_id = int(website_id_val) if website_id_val and website_id_val.isdigit() else None
+        additional_notes = request.form.get('additional_notes', '').strip()
+        selected_addon_ids = request.form.getlist('addon_ids')
+
+        if not full_name or not business_name or not whatsapp_number:
+            flash('Please provide your Name, Business Name, and WhatsApp number to lock in your project estimate.', 'warning')
+            return redirect(url_for('public.calculator'))
+
+        calculated_estimate = 0.0
+        has_estimate = False
+        if package_id:
+            pkg = db.session.get(Package, package_id)
+            if pkg and pkg.price:
+                calculated_estimate += float(pkg.price)
+                has_estimate = True
+
+        enquiry = Enquiry(
+            reference_code=Enquiry.generate_reference(),
+            full_name=full_name,
+            business_name=business_name,
+            whatsapp_number=whatsapp_number,
+            email=email,
+            website_id=website_id,
+            package_id=package_id,
+            additional_requirements=additional_notes or "Submitted via Interactive Project Cost Calculator",
+            status=EnquiryStatus.NEW
+        )
+        db.session.add(enquiry)
+        db.session.flush()
+
+        for aid_str in selected_addon_ids:
+            try:
+                aid = int(aid_str)
+                addon_obj = db.session.get(AddOn, aid)
+                if addon_obj:
+                    price_val = float(addon_obj.price) if addon_obj.price is not None else None
+                    if price_val:
+                        calculated_estimate += price_val
+                        has_estimate = True
+                    ea = EnquiryAddOn(enquiry_id=enquiry.id, add_on_id=aid, price_at_enquiry=price_val)
+                    db.session.add(ea)
+            except (ValueError, TypeError):
+                continue
+
+        enquiry.calculated_estimate = calculated_estimate if has_estimate else None
+        db.session.commit()
+
+        # Resend alert emails
+        try:
+            brand_name = SiteSetting.get('brand_name', 'ApexCraft Studios')
+            send_admin_enquiry_alert(enquiry, brand_name=brand_name)
+            if enquiry.email:
+                send_client_confirmation_email(enquiry, brand_name=brand_name)
+        except Exception:
+            pass
+
+        return redirect(url_for('public.enquiry_confirmation', reference_code=enquiry.reference_code))
+
+    return render_template(
+        'public/calculator.html',
+        packages=packages,
+        addons=addons,
+        projects=projects
+    )
+
+
+@public_bp.route('/enquiry/<reference_code>/pdf')
+def enquiry_pdf(reference_code):
+    enquiry = Enquiry.query.filter_by(reference_code=reference_code).first_or_404()
+    pdf_buffer = generate_enquiry_pdf(enquiry)
+    return send_file(
+        pdf_buffer,
+        as_attachment=True,
+        download_name=f"Proposal_{enquiry.reference_code}.pdf",
+        mimetype='application/pdf'
+    )

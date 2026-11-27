@@ -11,9 +11,14 @@
     </div>
     <p class="text-muted small mb-0">Received on {{ enquiry.created_at.strftime('%B %d, %Y at %I:%M %p') }}</p>
   </div>
-  <a href="{{ url_for('admin.enquiries_list') }}" class="btn btn-outline-secondary btn-sm">
-    <i class="bi bi-arrow-left"></i> Back to Enquiries
-  </a>
+  <div class="d-flex align-items-center gap-2">
+    <a href="{{ url_for('admin.enquiry_pdf', enquiry_id=enquiry.id) }}" class="btn btn-outline-dark btn-sm d-inline-flex align-items-center gap-1 shadow-sm bg-white">
+      <i class="bi bi-file-earmark-pdf-fill text-danger"></i> Download PDF Proposal
+    </a>
+    <a href="{{ url_for('admin.enquiries_list') }}" class="btn btn-outline-secondary btn-sm">
+      <i class="bi bi-arrow-left"></i> Back to Enquiries
+    </a>
+  </div>
 </div>
 
 <div class="row g-4">

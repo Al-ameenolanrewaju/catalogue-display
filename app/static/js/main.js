@@ -6,6 +6,9 @@ document.addEventListener('DOMContentLoaded', function () {
   const frameContainer = document.getElementById('deviceFrameTarget');
 
   if (deviceButtons.length && frameContainer) {
+    const chromeHeader = document.getElementById('mockBrowserChrome');
+    const mobileNotch = document.getElementById('mockMobileNotch');
+
     deviceButtons.forEach(btn => {
       btn.addEventListener('click', function () {
         deviceButtons.forEach(b => b.classList.remove('active', 'btn-charcoal'));
@@ -19,13 +22,54 @@ document.addEventListener('DOMContentLoaded', function () {
 
         if (mode === 'desktop') {
           frameContainer.classList.add('device-frame-desktop');
+          if (chromeHeader) chromeHeader.classList.remove('d-none');
+          if (mobileNotch) mobileNotch.classList.add('d-none');
         } else if (mode === 'tablet') {
           frameContainer.classList.add('device-frame-tablet');
+          if (chromeHeader) chromeHeader.classList.remove('d-none');
+          if (mobileNotch) mobileNotch.classList.add('d-none');
         } else if (mode === 'mobile') {
           frameContainer.classList.add('device-frame-mobile');
+          if (chromeHeader) chromeHeader.classList.add('d-none');
+          if (mobileNotch) mobileNotch.classList.remove('d-none');
         }
       });
     });
+
+    // Toggle live demo iframe inside frame if URL exists
+    const btnToggleLiveDemo = document.getElementById('btnToggleLiveDemo');
+    const liveIframe = document.getElementById('liveDemoIframe');
+    const mainShowcaseImg = document.getElementById('mainShowcaseImage');
+    const liveDemoBtnText = document.getElementById('liveDemoBtnText');
+
+    if (btnToggleLiveDemo && liveIframe && mainShowcaseImg) {
+      let isLiveActive = false;
+      const demoUrl = "{{ project.live_demo_url if project is defined else '' }}";
+
+      btnToggleLiveDemo.addEventListener('click', function () {
+        isLiveActive = !isLiveActive;
+        if (isLiveActive) {
+          if (!liveIframe.getAttribute('src') && window.location.pathname) {
+            // fetch data from current page's target link if present
+            const extLink = document.querySelector('a[title*="external live demo"]');
+            if (extLink && extLink.href) {
+              liveIframe.src = extLink.href;
+            }
+          }
+          liveIframe.classList.remove('d-none');
+          mainShowcaseImg.classList.add('d-none');
+          if (liveDemoBtnText) liveDemoBtnText.textContent = 'View Screenshot';
+          btnToggleLiveDemo.classList.add('btn-warning');
+          btnToggleLiveDemo.classList.remove('btn-outline-warning');
+        } else {
+          liveIframe.classList.add('d-none');
+          mainShowcaseImg.classList.remove('d-none');
+          if (liveDemoBtnText) liveDemoBtnText.textContent = 'Live Interactive View';
+          btnToggleLiveDemo.classList.remove('btn-warning');
+          btnToggleLiveDemo.classList.add('btn-outline-warning');
+        }
+      });
+    }
   }
 
   // 2. Thumbnail Switcher for Showcase Detail Gallery

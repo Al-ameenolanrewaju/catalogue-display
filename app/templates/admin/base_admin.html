@@ -96,6 +96,10 @@
         <i class="bi bi-puzzle"></i>
         <span>Custom Add-ons</span>
       </a>
+      <a href="{{ url_for('admin.testimonials_list') }}" class="admin-nav-link {% if 'testimonials' in request.endpoint %}active{% endif %}">
+        <i class="bi bi-star"></i>
+        <span>Client Testimonials</span>
+      </a>
       <a href="{{ url_for('admin.settings') }}" class="admin-nav-link {% if 'settings' in request.endpoint %}active{% endif %}">
         <i class="bi bi-sliders"></i>
         <span>Brand & Site Settings</span>

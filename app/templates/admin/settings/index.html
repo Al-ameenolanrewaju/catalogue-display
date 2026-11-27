@@ -65,6 +65,48 @@
           </div>
         </div>
 
+        <h6 class="fw-bold font-heading text-charcoal mb-3 pt-3 border-top border-subtle">Top Announcement &amp; Promo Banner</h6>
+        <div class="row g-3 mb-4">
+          <div class="col-12">
+            <div class="form-check form-switch mb-2">
+              {{ form.promo_banner_active(class="form-check-input", id="promoBannerSwitch") }}
+              <label class="form-check-label small fw-bold text-charcoal" for="promoBannerSwitch">
+                Enable Top Announcement Banner on Website
+              </label>
+            </div>
+            <small class="text-muted d-block mb-3">Displays an eye-catching, dismissible announcement bar at the very top of all public pages.</small>
+          </div>
+          <div class="col-md-3">
+            <label class="form-label small fw-bold text-charcoal">{{ form.promo_banner_badge.label.text }}</label>
+            {{ form.promo_banner_badge(class="form-control", placeholder="e.g. LIMITED PROMO") }}
+          </div>
+          <div class="col-md-6">
+            <label class="form-label small fw-bold text-charcoal">{{ form.promo_banner_text.label.text }}</label>
+            {{ form.promo_banner_text(class="form-control", placeholder="e.g. Special Offer: Free Domain Name & SSL Included This Month!") }}
+          </div>
+          <div class="col-md-3">
+            <label class="form-label small fw-bold text-charcoal">{{ form.promo_banner_link.label.text }}</label>
+            {{ form.promo_banner_link(class="form-control", placeholder="e.g. /calculator or /packages") }}
+          </div>
+        </div>
+
+        <h6 class="fw-bold font-heading text-charcoal mb-3 pt-3 border-top border-subtle">Banking &amp; Invoice Quotation Details</h6>
+        <p class="text-muted small mb-3">These details automatically appear on official PDF proposals and invoices generated for clients.</p>
+        <div class="row g-3 mb-4">
+          <div class="col-md-4">
+            <label class="form-label small fw-bold text-charcoal">{{ form.bank_name.label.text }}</label>
+            {{ form.bank_name(class="form-control", placeholder="e.g. Access Bank / GTBank") }}
+          </div>
+          <div class="col-md-4">
+            <label class="form-label small fw-bold text-charcoal">{{ form.account_number.label.text }}</label>
+            {{ form.account_number(class="form-control", placeholder="e.g. 0123456789") }}
+          </div>
+          <div class="col-md-4">
+            <label class="form-label small fw-bold text-charcoal">{{ form.account_name.label.text }}</label>
+            {{ form.account_name(class="form-control", placeholder="e.g. ApexCraft Studios Ltd") }}
+          </div>
+        </div>
+
         <h6 class="fw-bold font-heading text-charcoal mb-3 pt-3 border-top border-subtle">Social Media Handles</h6>
         <div class="row g-3 mb-4">
           <div class="col-md-6">

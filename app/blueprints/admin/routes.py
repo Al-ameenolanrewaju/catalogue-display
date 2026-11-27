@@ -1,5 +1,5 @@
 from datetime import datetime, timezone
-from flask import Blueprint, render_template, redirect, url_for, flash, request, abort
+from flask import Blueprint, render_template, redirect, url_for, flash, request, abort, send_file
 from flask_login import login_user, logout_user, login_required, current_user
 from sqlalchemy import or_
 
@@ -7,16 +7,17 @@ from app.extensions import db
 from app.models import (
     AdminUser, WebsiteCategory, WebsiteProject, WebsiteImage, 
     ProjectFeature, Package, PackageFeature, AddOn, 
-    Enquiry, EnquiryNote, EnquiryStatus, SiteSetting
+    Enquiry, EnquiryNote, EnquiryStatus, SiteSetting, Testimonial
 )
 from app.blueprints.admin.forms import (
     LoginForm, CategoryForm, WebsiteProjectForm, 
     PackageForm, AddOnForm, EnquiryStatusForm, 
-    EnquiryNoteForm, SiteSettingsForm
+    EnquiryNoteForm, SiteSettingsForm, TestimonialForm
 )
 from app.services.analytics_service import get_dashboard_metrics
 from app.services.storage import save_image_file
 from app.services.whatsapp import clean_phone_number
+from app.services.pdf_service import generate_enquiry_pdf
 
 admin_bp = Blueprint('admin', __name__, url_prefix='/admin')
 
@@ -584,6 +585,85 @@ def enquiry_add_note(enquiry_id):
     return redirect(url_for('admin.enquiry_detail', enquiry_id=enquiry.id))
 
 
+@admin_bp.route('/enquiries/<int:enquiry_id>/pdf')
+@login_required
+def enquiry_pdf(enquiry_id):
+    enquiry = db.get_or_404(Enquiry, enquiry_id)
+    pdf_buffer = generate_enquiry_pdf(enquiry)
+    return send_file(
+        pdf_buffer,
+        as_attachment=True,
+        download_name=f"Quotation_{enquiry.reference_code}.pdf",
+        mimetype='application/pdf'
+    )
+
+
+# ==========================================
+# TESTIMONIALS MANAGEMENT
+# ==========================================
+
+@admin_bp.route('/testimonials')
+@login_required
+def testimonials_list():
+    testimonials = Testimonial.query.order_by(Testimonial.display_order.asc(), Testimonial.created_at.desc()).all()
+    return render_template('admin/testimonials/index.html', testimonials=testimonials)
+
+
+@admin_bp.route('/testimonials/new', methods=['GET', 'POST'])
+@login_required
+def testimonial_create():
+    form = TestimonialForm()
+    if form.validate_on_submit():
+        testimonial = Testimonial(
+            client_name=form.client_name.data.strip(),
+            client_role_company=form.client_role_company.data.strip(),
+            project_type=form.project_type.data.strip() if form.project_type.data else None,
+            rating=int(form.rating.data),
+            content=form.content.data.strip(),
+            avatar_url=form.avatar_url.data.strip() if form.avatar_url.data else None,
+            is_featured=form.is_featured.data,
+            display_order=form.display_order.data or 0
+        )
+        db.session.add(testimonial)
+        db.session.commit()
+        flash(f'Testimonial from "{testimonial.client_name}" added successfully.', 'success')
+        return redirect(url_for('admin.testimonials_list'))
+    return render_template('admin/testimonials/form.html', form=form, title="Add New Testimonial")
+
+
+@admin_bp.route('/testimonials/<int:testimonial_id>/edit', methods=['GET', 'POST'])
+@login_required
+def testimonial_edit(testimonial_id):
+    testimonial = db.get_or_404(Testimonial, testimonial_id)
+    form = TestimonialForm(obj=testimonial)
+    if form.validate_on_submit():
+        testimonial.client_name = form.client_name.data.strip()
+        testimonial.client_role_company = form.client_role_company.data.strip()
+        testimonial.project_type = form.project_type.data.strip() if form.project_type.data else None
+        testimonial.rating = int(form.rating.data)
+        testimonial.content = form.content.data.strip()
+        testimonial.avatar_url = form.avatar_url.data.strip() if form.avatar_url.data else None
+        testimonial.is_featured = form.is_featured.data
+        testimonial.display_order = form.display_order.data or 0
+        db.session.commit()
+        flash('Testimonial updated successfully.', 'success')
+        return redirect(url_for('admin.testimonials_list'))
+    elif request.method == 'GET':
+        form.rating.data = str(testimonial.rating)
+    return render_template('admin/testimonials/form.html', form=form, title=f"Edit Testimonial: {testimonial.client_name}", testimonial=testimonial)
+
+
+@admin_bp.route('/testimonials/<int:testimonial_id>/delete', methods=['POST'])
+@login_required
+def testimonial_delete(testimonial_id):
+    testimonial = db.get_or_404(Testimonial, testimonial_id)
+    client_name = testimonial.client_name
+    db.session.delete(testimonial)
+    db.session.commit()
+    flash(f'Testimonial from "{client_name}" has been deleted.', 'info')
+    return redirect(url_for('admin.testimonials_list'))
+
+
 # ==========================================
 # SITE SETTINGS MANAGEMENT
 # ==========================================
@@ -596,7 +676,9 @@ def settings():
         'brand_name', 'brand_tagline', 'hero_title', 'hero_subtitle',
         'whatsapp_number', 'contact_phone', 'contact_email', 'office_address',
         'currency_symbol', 'instagram_url', 'twitter_url', 'linkedin_url', 'facebook_url',
-        'faq_q1', 'faq_a1', 'faq_q2', 'faq_a2', 'faq_q3', 'faq_a3', 'faq_q4', 'faq_a4', 'faq_q5', 'faq_a5'
+        'faq_q1', 'faq_a1', 'faq_q2', 'faq_a2', 'faq_q3', 'faq_a3', 'faq_q4', 'faq_a4', 'faq_q5', 'faq_a5',
+        'promo_banner_text', 'promo_banner_badge', 'promo_banner_link',
+        'bank_name', 'account_number', 'account_name'
     ]
 
     default_faqs = [
@@ -611,7 +693,11 @@ def settings():
         for field in fields:
             val = getattr(form, field).data
             SiteSetting.set(field, val.strip() if val else "")
-        flash('Brand settings and FAQ updated successfully.', 'success')
+        
+        # Save boolean promo banner active
+        SiteSetting.set('promo_banner_active', 'true' if form.promo_banner_active.data else 'false')
+
+        flash('Brand settings, announcement banner, and FAQ updated successfully.', 'success')
         return redirect(url_for('admin.settings'))
 
     elif request.method == 'GET':
@@ -628,6 +714,17 @@ def settings():
         form.twitter_url.data = SiteSetting.get('twitter_url', '')
         form.linkedin_url.data = SiteSetting.get('linkedin_url', '')
         form.facebook_url.data = SiteSetting.get('facebook_url', '')
+
+        # Promo banner
+        form.promo_banner_active.data = SiteSetting.get('promo_banner_active', 'true').lower() == 'true'
+        form.promo_banner_text.data = SiteSetting.get('promo_banner_text', 'Special Offer: Free Domain Name & SSL Included With Any Package This Month!')
+        form.promo_banner_badge.data = SiteSetting.get('promo_banner_badge', 'LIMITED PROMO')
+        form.promo_banner_link.data = SiteSetting.get('promo_banner_link', '/calculator')
+
+        # Banking
+        form.bank_name.data = SiteSetting.get('bank_name', 'Access Bank / GTBank')
+        form.account_number.data = SiteSetting.get('account_number', '0123456789')
+        form.account_name.data = SiteSetting.get('account_name', SiteSetting.get('brand_name', 'ApexCraft Studios'))
 
         for i, (q_def, a_def) in enumerate(default_faqs, 1):
             getattr(form, f'faq_q{i}').data = SiteSetting.get(f'faq_q{i}', q_def)

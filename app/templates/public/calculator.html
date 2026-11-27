@@ -1,0 +1,345 @@
+{% extends "base.html" %}
+
+{% block title %}Interactive Project Cost Estimator | {{ brand_name }}{% endblock %}
+{% block meta_description %}Calculate the investment for your custom website build with transparent pricing, instant package breakdowns, and direct WhatsApp / PDF proposals.{% endblock %}
+
+{% block content %}
+<!-- Page Header -->
+<section class="py-5 bg-warm-surface border-bottom border-subtle">
+  <div class="container py-4 text-center">
+    <span class="badge bg-white text-charcoal border px-3 py-2 fw-semibold mb-3">
+      <i class="bi bi-calculator text-warning me-1"></i> INSTANT INVESTMENT ESTIMATOR
+    </span>
+    <h1 class="display-5 fw-extrabold font-heading text-charcoal mb-3">
+      Calculate Your Custom Website Project
+    </h1>
+    <p class="lead text-muted fs-6 max-w-700 mx-auto mb-0">
+      Select your desired architecture, features, and functional add-ons below for real-time, transparent pricing with no hidden surprises.
+    </p>
+  </div>
+</section>
+
+<!-- Calculator App Section -->
+<section class="py-5 bg-warm-main">
+  <div class="container py-3">
+    <form id="calculatorForm" method="POST" action="{{ url_for('public.calculator') }}">
+      <div class="row g-4">
+        <!-- Main Configuration Columns -->
+        <div class="col-lg-8">
+          
+          <!-- STEP 1: Choose Website Architecture Tier -->
+          <div class="bg-white p-4 p-md-5 rounded-4 border border-subtle shadow-sm mb-4">
+            <div class="d-flex align-items-center gap-3 mb-4">
+              <span class="bg-warning text-dark fw-bold rounded-circle d-flex align-items-center justify-content-center" style="width: 32px; height: 32px; font-size: 0.9rem;">1</span>
+              <div>
+                <h5 class="fw-bold font-heading text-charcoal mb-0">Choose Your Website Foundation</h5>
+                <p class="text-muted small mb-0">Select the base architecture tier that best aligns with your business goals.</p>
+              </div>
+            </div>
+
+            <div class="row g-3">
+              {% for pkg in packages %}
+              <div class="col-md-6">
+                <label class="calc-package-card d-block p-3 p-md-4 rounded-3 border position-relative cursor-pointer transition-all h-100 {% if loop.index == 2 %}selected-calc-pkg{% endif %}" data-pkg-id="{{ pkg.id }}" data-pkg-name="{{ pkg.name }}" data-pkg-price="{{ pkg.price or 0 }}">
+                  <input type="radio" name="package_id" value="{{ pkg.id }}" class="d-none" {% if loop.index == 2 %}checked{% endif %}>
+                  <div class="d-flex justify-content-between align-items-start mb-2">
+                    <span class="fw-bold font-heading text-charcoal fs-6">{{ pkg.name }}</span>
+                    <i class="bi bi-check-circle-fill text-warning fs-5 check-icon"></i>
+                  </div>
+                  <div class="fs-5 fw-extrabold text-charcoal mb-2">
+                    {% if pkg.price %}
+                    {{ currency_symbol }}{{ "{:,.0f}".format(pkg.price) }}
+                    {% else %}
+                    Custom Quote
+                    {% endif %}
+                  </div>
+                  <p class="text-secondary small mb-3" style="line-height: 1.4;">{{ pkg.description }}</p>
+                  <ul class="list-unstyled small text-muted mb-0 d-flex flex-column gap-1">
+                    {% for feat in pkg.features[:3] %}
+                    <li class="d-flex align-items-center gap-2">
+                      <i class="bi bi-check2 text-success"></i> <span>{{ feat.feature_text }}</span>
+                    </li>
+                    {% endfor %}
+                  </ul>
+                </label>
+              </div>
+              {% endfor %}
+            </div>
+          </div>
+
+          <!-- STEP 2: Optional Design Inspiration -->
+          <div class="bg-white p-4 p-md-5 rounded-4 border border-subtle shadow-sm mb-4">
+            <div class="d-flex align-items-center gap-3 mb-4">
+              <span class="bg-warning text-dark fw-bold rounded-circle d-flex align-items-center justify-content-center" style="width: 32px; height: 32px; font-size: 0.9rem;">2</span>
+              <div>
+                <h5 class="fw-bold font-heading text-charcoal mb-0">Select Showcase Inspiration (Optional)</h5>
+                <p class="text-muted small mb-0">Reference one of our live catalog concepts as a visual starting benchmark.</p>
+              </div>
+            </div>
+
+            <div class="row g-3">
+              <div class="col-12">
+                <select name="website_id" id="websiteSelect" class="form-select form-select-lg">
+                  <option value="" selected>-- No specific showcase (Custom design from scratch) --</option>
+                  {% for p in projects %}
+                  <option value="{{ p.id }}">{{ p.title }} ({{ p.intended_business_type }})</option>
+                  {% endfor %}
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <!-- STEP 3: Add-on Power-ups & Integrations -->
+          <div class="bg-white p-4 p-md-5 rounded-4 border border-subtle shadow-sm mb-4">
+            <div class="d-flex align-items-center gap-3 mb-4">
+              <span class="bg-warning text-dark fw-bold rounded-circle d-flex align-items-center justify-content-center" style="width: 32px; height: 32px; font-size: 0.9rem;">3</span>
+              <div>
+                <h5 class="fw-bold font-heading text-charcoal mb-0">Select Add-On Modules &amp; Integrations</h5>
+                <p class="text-muted small mb-0">Power up your website with payments, WhatsApp automations, and speed tools.</p>
+              </div>
+            </div>
+
+            <div class="row g-3">
+              {% for a in addons %}
+              <div class="col-md-6">
+                <label class="calc-addon-item d-flex align-items-start gap-3 p-3 rounded-3 border cursor-pointer transition-all h-100" data-addon-id="{{ a.id }}" data-addon-name="{{ a.name }}" data-addon-price="{{ a.price or 0 }}">
+                  <input type="checkbox" name="addon_ids" value="{{ a.id }}" class="form-check-input mt-1 flex-shrink-0" {% if loop.index == 1 %}checked{% endif %}>
+                  <div class="flex-grow-1">
+                    <div class="d-flex justify-content-between align-items-start mb-1">
+                      <strong class="text-charcoal small font-heading">{{ a.name }}</strong>
+                      <span class="badge bg-light text-dark border ms-2">
+                        {% if a.price %}+{{ currency_symbol }}{{ "{:,.0f}".format(a.price) }}{% else %}Quote{% endif %}
+                      </span>
+                    </div>
+                    <p class="text-secondary mb-0" style="font-size: 0.78rem; line-height: 1.35;">{{ a.description }}</p>
+                  </div>
+                </label>
+              </div>
+              {% endfor %}
+            </div>
+          </div>
+
+          <!-- STEP 4: Client Contact Details -->
+          <div class="bg-white p-4 p-md-5 rounded-4 border border-subtle shadow-sm mb-4">
+            <div class="d-flex align-items-center gap-3 mb-4">
+              <span class="bg-warning text-dark fw-bold rounded-circle d-flex align-items-center justify-content-center" style="width: 32px; height: 32px; font-size: 0.9rem;">4</span>
+              <div>
+                <h5 class="fw-bold font-heading text-charcoal mb-0">Lock In Your Estimate</h5>
+                <p class="text-muted small mb-0">Provide your contact info to receive an official proposal and PDF quote.</p>
+              </div>
+            </div>
+
+            <div class="row g-3">
+              <div class="col-md-6">
+                <label class="form-label small fw-bold text-charcoal">Your Full Name <span class="text-danger">*</span></label>
+                <input type="text" name="full_name" class="form-control" placeholder="e.g. Tunde Bakare" required>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label small fw-bold text-charcoal">Business / Brand Name <span class="text-danger">*</span></label>
+                <input type="text" name="business_name" class="form-control" placeholder="e.g. Prime Realty Ltd" required>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label small fw-bold text-charcoal">WhatsApp Number <span class="text-danger">*</span></label>
+                <input type="tel" name="whatsapp_number" class="form-control" placeholder="e.g. +234 803 123 4567" required>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label small fw-bold text-charcoal">Email Address (For PDF Delivery)</label>
+                <input type="email" name="email" class="form-control" placeholder="e.g. tunde@company.ng">
+              </div>
+              <div class="col-12">
+                <label class="form-label small fw-bold text-charcoal">Special Project Notes / Requirements</label>
+                <textarea name="additional_notes" class="form-control" rows="2" placeholder="Mention any extra features, launch deadlines, or domain names you already own..."></textarea>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Sticky Right Column: Live Price Tally & Actions -->
+        <div class="col-lg-4">
+          <div class="sticky-top" style="top: 100px; z-index: 10;">
+            <div class="bg-white p-4 rounded-4 border border-subtle shadow-sm">
+              <div class="d-flex justify-content-between align-items-center mb-3 pb-2 border-bottom border-subtle">
+                <h6 class="fw-bold font-heading text-charcoal mb-0">Estimated Investment</h6>
+                <span class="badge bg-warning-subtle text-dark border border-warning-subtle px-2 py-1">TRANSPARENT</span>
+              </div>
+
+              <!-- Big Number -->
+              <div class="mb-4 text-center py-3 bg-warm-surface rounded-3 border border-subtle">
+                <span class="text-muted small d-block mb-1 font-heading">Total Estimated Investment</span>
+                <div id="liveTotalDisplay" class="display-6 fw-extrabold text-charcoal lh-1">
+                  {{ currency_symbol }}0
+                </div>
+                <small class="text-secondary mt-1 d-block" style="font-size: 0.75rem;">50% Milestone deposit to commence</small>
+              </div>
+
+              <!-- Selected Items List -->
+              <div class="mb-4">
+                <span class="small fw-bold text-charcoal d-block mb-2 font-heading">Scope Breakdown:</span>
+                <div id="scopeBreakdownList" class="d-flex flex-column gap-2 small">
+                  <!-- Dynamically populated via JS -->
+                </div>
+              </div>
+
+              <!-- Timeline & Guarantees -->
+              <div class="p-3 bg-light rounded-3 mb-4 small">
+                <div class="d-flex align-items-center gap-2 mb-1 text-charcoal fw-semibold">
+                  <i class="bi bi-clock-history text-warning"></i>
+                  <span>5 to 10 Business Days Turnaround</span>
+                </div>
+                <div class="d-flex align-items-center gap-2 text-charcoal fw-semibold">
+                  <i class="bi bi-shield-check text-success"></i>
+                  <span>Free SSL, Hosting Setup &amp; Training</span>
+                </div>
+              </div>
+
+              <!-- Action Buttons -->
+              <div class="d-flex flex-column gap-2">
+                <button type="submit" class="btn btn-gold btn-lg w-100 shadow-sm d-flex align-items-center justify-content-center gap-2">
+                  <i class="bi bi-file-earmark-pdf-fill"></i>
+                  <span>Lock In Quote &amp; Get PDF</span>
+                </button>
+
+                <button type="button" id="btnWhatsAppEstimate" class="btn btn-success w-100 d-flex align-items-center justify-content-center gap-2 py-2">
+                  <i class="bi bi-whatsapp"></i>
+                  <span>Send Estimate to WhatsApp</span>
+                </button>
+              </div>
+
+              <div class="text-center mt-3">
+                <span class="text-muted" style="font-size: 0.72rem;">
+                  <i class="bi bi-lock-fill"></i> No spam. We only contact you regarding this quote.
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+</section>
+
+<!-- Embedded Calculator Script -->
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  const currencySymbol = {{ currency_symbol|tojson }};
+  const whatsappNumber = {{ whatsapp_number|tojson }};
+  const brandName = {{ brand_name|tojson }};
+
+  const packageCards = document.querySelectorAll('.calc-package-card');
+  const addonItems = document.querySelectorAll('.calc-addon-item');
+  const liveTotalDisplay = document.getElementById('liveTotalDisplay');
+  const scopeBreakdownList = document.getElementById('scopeBreakdownList');
+  const btnWhatsApp = document.getElementById('btnWhatsAppEstimate');
+
+  function calculate() {
+    let total = 0;
+    let selectedPackage = null;
+    let selectedAddons = [];
+
+    // Package selection
+    packageCards.forEach(card => {
+      const radio = card.querySelector('input[type="radio"]');
+      if (radio && radio.checked) {
+        card.classList.add('border-warning', 'bg-warning-subtle');
+        const price = parseFloat(card.getAttribute('data-pkg-price')) || 0;
+        const name = card.getAttribute('data-pkg-name');
+        selectedPackage = { name, price };
+        total += price;
+      } else {
+        card.classList.remove('border-warning', 'bg-warning-subtle');
+      }
+    });
+
+    // Addon selection
+    addonItems.forEach(item => {
+      const checkbox = item.querySelector('input[type="checkbox"]');
+      if (checkbox && checkbox.checked) {
+        item.classList.add('border-warning', 'bg-warning-subtle');
+        const price = parseFloat(item.getAttribute('data-addon-price')) || 0;
+        const name = item.getAttribute('data-addon-name');
+        selectedAddons.push({ name, price });
+        total += price;
+      } else {
+        item.classList.remove('border-warning', 'bg-warning-subtle');
+      }
+    });
+
+    // Update display
+    liveTotalDisplay.textContent = currencySymbol + total.toLocaleString('en-US');
+
+    // Update breakdown list
+    scopeBreakdownList.innerHTML = '';
+    if (selectedPackage) {
+      const pkgRow = document.createElement('div');
+      pkgRow.className = 'd-flex justify-content-between align-items-center text-charcoal';
+      pkgRow.innerHTML = `<span><strong>${selectedPackage.name}</strong></span><span class="fw-bold">${currencySymbol}${selectedPackage.price.toLocaleString('en-US')}</span>`;
+      scopeBreakdownList.appendChild(pkgRow);
+    }
+
+    if (selectedAddons.length > 0) {
+      selectedAddons.forEach(a => {
+        const addRow = document.createElement('div');
+        addRow.className = 'd-flex justify-content-between align-items-center text-muted';
+        addRow.innerHTML = `<span>+ ${a.name}</span><span>${currencySymbol}${a.price.toLocaleString('en-US')}</span>`;
+        scopeBreakdownList.appendChild(addRow);
+      });
+    } else {
+      const noAdd = document.createElement('div');
+      noAdd.className = 'text-muted';
+      noAdd.style.fontSize = '0.75rem';
+      noAdd.textContent = 'No extra add-ons selected yet.';
+      scopeBreakdownList.appendChild(noAdd);
+    }
+  }
+
+  // Bind clicks on package cards
+  packageCards.forEach(card => {
+    card.addEventListener('click', function () {
+      const radio = this.querySelector('input[type="radio"]');
+      if (radio) {
+        radio.checked = true;
+        calculate();
+      }
+    });
+  });
+
+  // Bind changes on addons
+  addonItems.forEach(item => {
+    const chk = item.querySelector('input[type="checkbox"]');
+    if (chk) {
+      chk.addEventListener('change', calculate);
+    }
+  });
+
+  // WhatsApp Button Handler
+  if (btnWhatsApp) {
+    btnWhatsApp.addEventListener('click', function () {
+      let pkgName = 'Custom';
+      let totalStr = liveTotalDisplay.textContent;
+      let checkedPkg = document.querySelector('.calc-package-card input[type="radio"]:checked');
+      if (checkedPkg) {
+        pkgName = checkedPkg.closest('.calc-package-card').getAttribute('data-pkg-name');
+      }
+
+      let addons = [];
+      document.querySelectorAll('.calc-addon-item input[type="checkbox"]:checked').forEach(c => {
+        addons.push(c.closest('.calc-addon-item').getAttribute('data-addon-name'));
+      });
+
+      let cleanPhone = whatsappNumber.replace(/[^0-9]/g, '');
+      let text = `Hello ${brandName}, I just configured a project on your website calculator:%0A%0A` +
+        `📦 *Selected Foundation:* ${pkgName}%0A` +
+        (addons.length ? `🧩 *Add-ons:* ${addons.join(', ')}%0A` : '') +
+        `💰 *Estimated Investment:* ${totalStr}%0A%0A` +
+        `I would like to discuss next steps and lock in this quotation.`;
+
+      window.open(`https://wa.me/${cleanPhone}?text=${text}`, '_blank');
+    });
+  }
+
+  // Initial calculation
+  calculate();
+});
+</script>
+{% endblock %}

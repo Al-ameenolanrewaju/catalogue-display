@@ -78,28 +78,67 @@
       <!-- Left Column: Interactive Responsive Preview Stage & Gallery -->
       <div class="col-lg-8">
         <!-- Responsive Device Switcher Controls -->
-        <div class="d-flex align-items-center justify-content-between mb-3 bg-white p-2 rounded-3 border border-subtle shadow-sm">
-          <span class="small fw-bold text-muted ps-2"><i class="bi bi-display"></i> Preview Viewport:</span>
-          <div class="btn-group btn-group-sm" role="group" aria-label="Device Preview Modes">
-            <button type="button" class="btn btn-charcoal active" data-device-target="desktop" title="Desktop Viewport">
-              <i class="bi bi-laptop"></i> Desktop
+        <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 mb-3 bg-white p-2 p-sm-3 rounded-3 border border-subtle shadow-sm">
+          <div class="d-flex align-items-center gap-2">
+            <span class="small fw-bold text-muted ps-1"><i class="bi bi-display"></i> Viewport:</span>
+            <div class="btn-group btn-group-sm" role="group" aria-label="Device Preview Modes">
+              <button type="button" class="btn btn-charcoal active" data-device-target="desktop" title="Desktop Viewport">
+                <i class="bi bi-laptop"></i> Desktop
+              </button>
+              <button type="button" class="btn btn-outline-secondary" data-device-target="tablet" title="Tablet Viewport (768px)">
+                <i class="bi bi-tablet"></i> Tablet
+              </button>
+              <button type="button" class="btn btn-outline-secondary" data-device-target="mobile" title="Mobile Smartphone (375px)">
+                <i class="bi bi-phone"></i> Mobile
+              </button>
+            </div>
+          </div>
+
+          <div class="d-flex align-items-center gap-2">
+            {% if project.live_demo_url %}
+            <button type="button" id="btnToggleLiveDemo" class="btn btn-sm btn-outline-warning text-dark border-warning fw-semibold d-inline-flex align-items-center gap-1">
+              <i class="bi bi-play-circle-fill text-warning"></i>
+              <span id="liveDemoBtnText">Live Interactive View</span>
             </button>
-            <button type="button" class="btn btn-outline-secondary" data-device-target="tablet" title="Tablet Viewport">
-              <i class="bi bi-tablet"></i> Tablet
-            </button>
-            <button type="button" class="btn btn-outline-secondary" data-device-target="mobile" title="Mobile Smartphone Viewport">
-              <i class="bi bi-phone"></i> Mobile
+            <a href="{{ project.live_demo_url }}" target="_blank" class="btn btn-sm btn-outline-secondary" title="Open external live demo in new tab">
+              <i class="bi bi-box-arrow-up-right"></i>
+            </a>
+            {% endif %}
+            <button type="button" class="btn btn-sm btn-outline-secondary btn-copy-link" title="Share Showcase Link">
+              <i class="bi bi-share"></i> Share
             </button>
           </div>
-          <button type="button" class="btn btn-sm btn-outline-secondary btn-copy-link" title="Share Showcase Link">
-            <i class="bi bi-share"></i> Share
-          </button>
         </div>
 
         <!-- Preview Stage Frame -->
-        <div class="preview-stage mb-4">
-          <div id="deviceFrameTarget" class="device-frame-desktop transition-all">
-            <img id="mainShowcaseImage" src="{{ project.primary_image_url }}" alt="{{ project.title }}" class="w-100 d-block" style="object-fit: cover;">
+        <div class="preview-stage mb-4 d-flex justify-content-center">
+          <div id="deviceFrameTarget" class="device-frame-desktop transition-all position-relative shadow-lg">
+            
+            <!-- Desktop / Tablet Browser Chrome Header -->
+            <div id="mockBrowserChrome" class="d-flex align-items-center gap-2 px-3 py-2 bg-light border-bottom border-subtle" style="font-size: 0.75rem;">
+              <div class="d-flex align-items-center gap-1 flex-shrink-0">
+                <span class="rounded-circle bg-danger opacity-75 d-inline-block" style="width: 10px; height: 10px;"></span>
+                <span class="rounded-circle bg-warning opacity-75 d-inline-block" style="width: 10px; height: 10px;"></span>
+                <span class="rounded-circle bg-success opacity-75 d-inline-block" style="width: 10px; height: 10px;"></span>
+              </div>
+              <div class="flex-grow-1 bg-white border rounded px-2 py-1 text-muted text-truncate d-flex align-items-center gap-1">
+                <i class="bi bi-lock-fill text-success" style="font-size: 0.7rem;"></i>
+                <span class="user-select-all font-monospace" style="font-size: 0.72rem;">https://{{ project.slug }}.preview.ng</span>
+              </div>
+            </div>
+
+            <!-- Mobile Notch Header (Visible only on mobile mode) -->
+            <div id="mockMobileNotch" class="d-none text-center py-2 bg-dark">
+              <div class="d-inline-block bg-black rounded-pill" style="width: 80px; height: 14px;"></div>
+            </div>
+
+            <!-- Screen Viewport Content (Image or Live Iframe) -->
+            <div id="deviceScreenViewport" class="position-relative overflow-hidden bg-white" style="min-height: 480px;">
+              <img id="mainShowcaseImage" src="{{ project.primary_image_url }}" alt="{{ project.title }}" class="w-100 d-block" style="object-fit: cover;">
+              {% if project.live_demo_url %}
+              <iframe id="liveDemoIframe" src="" class="w-100 h-100 border-0 position-absolute top-0 start-0 d-none" style="min-height: 600px;" loading="lazy"></iframe>
+              {% endif %}
+            </div>
           </div>
         </div>
 

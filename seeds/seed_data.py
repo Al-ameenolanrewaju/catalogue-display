@@ -2,7 +2,7 @@ import os
 from app.extensions import db
 from app.models import (
     AdminUser, WebsiteCategory, WebsiteProject, WebsiteImage, 
-    ProjectFeature, Package, PackageFeature, AddOn, SiteSetting
+    ProjectFeature, Package, PackageFeature, AddOn, SiteSetting, Testimonial
 )
 
 
@@ -413,6 +413,60 @@ def seed_database():
                     display_order=order
                 )
                 db.session.add(img)
+
+    # 7. Testimonials
+    testimonials_data = [
+        (
+            'Funke Adeleke',
+            'Founder, Luxe Pret-a-Porter',
+            'E-Commerce Fashion Store',
+            5,
+            'Our online orders increased dramatically within the first two weeks of launching our new catalogue website. The mobile checkout with Paystack and direct WhatsApp ordering is completely frictionless for our clients.',
+            'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=300&q=80',
+            1
+        ),
+        (
+            'Osagie Osemwengie',
+            'Managing Director, Horizon Energy Group',
+            'Corporate Energy Portal',
+            5,
+            'The delivery was completed in under 8 business days. The administrative control panel allows our corporate communications team to update project reports and news releases effortlessly without writing any code.',
+            'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=300&q=80',
+            2
+        ),
+        (
+            'Chinedu Ibe',
+            'Principal Partner, Apex Chambers',
+            'Legal Practice & Consulting',
+            5,
+            'Our new website immediately established high-tier authority for our legal consultancy. International clients commented on how clear, fast, and structured our practice areas look on smartphones.',
+            'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=300&q=80',
+            3
+        ),
+        (
+            'Dr. Aisha Bello',
+            'Medical Director, Crestview Clinics',
+            'Healthcare & Diagnostics',
+            5,
+            'Patient consultation bookings became 3x more organized after our website launch. The team accommodated all our appointment scheduling requirements with utmost professionalism.',
+            'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=300&q=80',
+            4
+        )
+    ]
+    for name, role, ptype, rating, content, avatar, order in testimonials_data:
+        t = Testimonial.query.filter_by(client_name=name).first()
+        if not t:
+            t = Testimonial(
+                client_name=name,
+                client_role_company=role,
+                project_type=ptype,
+                rating=rating,
+                content=content,
+                avatar_url=avatar,
+                is_featured=True,
+                display_order=order
+            )
+            db.session.add(t)
 
     db.session.commit()
     print("Database successfully populated with rich catalogue seed data.")
