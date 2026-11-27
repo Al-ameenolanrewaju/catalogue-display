@@ -169,18 +169,23 @@ small, .small {
 }
 
 @media (max-width: 991.98px) {
-  .navbar-custom .navbar-collapse {
-    background: #FFFFFF;
-    border-radius: var(--radius-md);
-    padding: 1.25rem;
-    margin-top: 0.75rem;
-    border: 1px solid var(--border-subtle);
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+  .navbar-toggler:focus {
+    box-shadow: none !important;
   }
-  .navbar-nav .nav-link {
-    padding: 0.65rem 0.85rem !important;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.03);
-  }
+}
+
+/* Mobile Hamburger Offcanvas Drawer */
+.mobile-drawer-link {
+  font-size: 0.98rem !important;
+  font-weight: 600;
+  color: var(--text-charcoal) !important;
+  padding: 0.7rem 0.9rem !important;
+  border-radius: var(--radius-md);
+  transition: all 0.2s ease;
+}
+.mobile-drawer-link:hover, .mobile-drawer-link.active {
+  background-color: rgba(184, 134, 11, 0.12);
+  color: var(--accent-gold-dark) !important;
 }
 
 /* Totally disable breadcrumbs */
